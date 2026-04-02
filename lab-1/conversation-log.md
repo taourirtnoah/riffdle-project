@@ -1,23 +1,84 @@
-## Conversation saved: 2026-04-01 02:31:09 +02:00
+# Conversation Log
 
-Test conversation entry
+## Session timeline (full conversation so far)
 
+### 1) Lab 1 boilerplate request
+**User:**
+Asked for Lab 1 boilerplate for an **Extreme Metal Music Quiz** app, with strict requirements:
+- 7 classes total, at least 4 complex classes (>5 properties)
+- at least one custom enum
+- at least one `DateTime` property
+- relationships: 1-N and N-N
+- in `Program.cs`, seed 3 main `Quiz` objects each with at least 3 related objects
+- include 3 meaningful LINQ queries
+- include async/await example
+- classes must be `public`
+
+**Assistant:**
+Implemented model and program setup:
+- Added files in `Models/Lab1/`:
+  - `MetalGenre.cs`
+  - `HintType.cs`
+  - `Band.cs`
+  - `Song.cs`
+  - `Quiz.cs`
+  - `QuizRound.cs`
+  - `Hint.cs`
+  - `UserPlaylist.cs`
+  - `PlaylistSong.cs`
+- Updated `Program.cs` to:
+  - create and link demo data
+  - create 3 quizzes with 3 rounds each
+  - generate 5 hints per round (Genre -> Lyrics -> Audio Snippet -> Album Cover -> Band Name)
+  - include 3 LINQ queries
+  - include `LoadTrackAsync` async method
+- Fixed a compile issue caused by a duplicate top-level statement line in `Program.cs`
+- Ran `dotnet build` successfully.
 
 ---
-## Conversation saved: 2026-04-01 02:40:41 +02:00
 
-Moved target test
+### 2) `.gitignore` request
+**User:**
+Asked to add files that should not be pushed to GitHub into `.gitignore`.
 
+**Assistant:**
+Created root `.gitignore` with common ignores:
+- `bin/`, `obj/`
+- `.vs/`, `.idea/`, `.vscode/`
+- `*.user`, `*.suo`, `*.log`
+- `TestResults/`, `*.trx`
+- `*.nupkg`, `*.snupkg`
+- `.DS_Store`, `Thumbs.db`
+- `.env`, `.env.*`
 
 ---
 
-Context: I am working on Lab 1 for my C# course (refer to the attached Lab-1 (1).md). The theme of my project is an "Extreme Metal Music Quiz" web app.
-The Game Mechanics: Users must guess a song's name based on 5 progressively easier hints: Genre -> Lyrics -> Audio Snippet -> Album Cover -> Band Name.
-Task: Please generate the boilerplate code for the Object Model and Main Program following these strict requirements from the Lab document:
-Class Structure: Create 7 classes total. At least 4 must be "complex" (more than 5 properties).
-Required Types: Include at least one custom enum (e.g., MetalGenre) and at least one DateTime property (e.g., ReleaseDate).
-Relationships: Ensure you demonstrate 1-to-Many (e.g., Band to Songs) and Many-to-Many (e.g., Songs to User Playlists or Quiz Sessions) relationships.
-Main Program Data: In Program.cs, "fill" the model by creating 3 main Quiz objects, each containing at least 3 related objects (like Songs or Clues) as per the lab examples.
-LINQ: Include 3 meaningful LINQ queries that filter or sort the music data (e.g., getting all Black Metal songs released after 1990).
-Async/Await: Provide a small example of an async method (e.g., LoadTrackAsync) as required by the "Async Arhitektura" section of the lab.
-Please use public visibility for classes as noted in the "Važna napomena" section of the lab.
+### 3) Push all changes request
+**User:**
+Asked to push all changes to GitHub.
+
+**Assistant:**
+Executed Git workflow:
+- checked repo status
+- staged all changes
+- removed generated artifacts from tracking (`obj/`, `bin/`, `Riffdle.csproj.user`) using cached remove
+- committed changes with message:
+  - `Add Lab 1 model boilerplate and update gitignore`
+- pushed to `origin/main`
+
+Push result:
+- remote: `https://github.com/taourirtnoah/riffdle-project`
+- branch: `main`
+- commit: `570044e`
+
+Noted during commit:
+- `scripts/save-conversation.ps1` produced PowerShell parse errors due to merge markers (`<<<<<<< HEAD`), but commit/push still completed.
+
+---
+
+### 4) Conversation log update request
+**User:**
+Requested updating `lab-1/conversation-log.md` so it contains the whole conversation up to now.
+
+**Assistant:**
+Updated this file with the complete conversation timeline.
