@@ -1,0 +1,48 @@
+@model SongIndexViewModel
+@{
+    ViewData["Title"] = "Songs";
+}
+
+@section Breadcrumbs {
+    @await Html.PartialAsync("_Breadcrumbs")
+}
+
+<h1 class="page-title">Songs</h1>
+<p class="page-lead">Scroll the full mock setlist and inspect each track in detail.</p>
+
+<div class="table-wrap">
+    <table class="metal-table">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Band</th>
+                <th>Album</th>
+                <th>Duration</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.Songs.Count == 0)
+            {
+                <tr>
+                    <td colspan="5">No songs available.</td>
+                </tr>
+            }
+            else
+            {
+                @foreach (var song in Model.Songs.OrderBy(item => item.Album.Band.Name).ThenBy(item => item.Title))
+                {
+                    <tr>
+                        <td>@song.Title</td>
+                        <td>@song.Album.Band.Name</td>
+                        <td>@song.Album.Title</td>
+                        <td>@TimeSpan.FromSeconds(song.DurationSeconds).ToString(@"m\:ss")</td>
+                        <td>
+                            <a class="inline-link" asp-controller="Song" asp-action="Details" asp-route-id="@song.Id">View details</a>
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>

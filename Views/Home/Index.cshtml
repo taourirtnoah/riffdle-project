@@ -1,8 +1,94 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@model DailyQuizViewModel
+@{
+    ViewData["Title"] = "Daily Quiz";
+    var song = Model.DailySong;
+    var streak = ViewData["DailyStreak"] as int? ?? 6;
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+<section class="quiz-hero">
+    <p class="eyebrow">Daily Challenge</p>
+    <h1 class="page-title">Guess today's metal song</h1>
+    <p class="page-lead">One hidden track. Four clues. You get smarter with every miss.</p>
+
+    <div class="hero-grid">
+        <div class="art-placeholder" aria-hidden="true">
+            <div class="art-noise"></div>
+            <span>Obscured waveform / album art</span>
+        </div>
+
+        <aside class="streak-card">
+            <p class="mini-label">Current streak</p>
+            <p class="streak-value">@streak days</p>
+            <button type="button" class="metal-button metal-button-ghost">Share Today's Result</button>
+        </aside>
+    </div>
+
+    <section class="quiz-panel">
+        <h2 class="section-title">Clues</h2>
+        <ul class="clue-list">
+            <li class="@(Model.AttemptCount >= 1 ? "revealed" : "locked")">
+                <span>Band initials</span>
+                <strong>@(Model.AttemptCount >= 1 ? Model.BandInitials : "Locked")</strong>
+            </li>
+            <li class="@(Model.AttemptCount >= 2 ? "revealed" : "locked")">
+                <span>Album year</span>
+                <strong>@(Model.AttemptCount >= 2 ? Model.AlbumYear.ToString() : "Locked")</strong>
+            </li>
+            <li class="@(Model.AttemptCount >= 3 ? "revealed" : "locked")">
+                <span>Genre</span>
+                <strong>@(Model.AttemptCount >= 3 ? Model.GenreName : "Locked")</strong>
+            </li>
+            <li class="@(Model.AttemptCount >= 4 ? "revealed" : "locked")">
+                <span>First lyric</span>
+                <strong>@(Model.AttemptCount >= 4 ? Model.FirstLyric : "Locked")</strong>
+            </li>
+        </ul>
+
+        <form asp-controller="Home" asp-action="Index" method="post" class="quiz-form">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="attemptCount" value="@Model.AttemptCount" />
+
+            <label for="guess" class="mini-label">Your guess</label>
+            <div class="guess-row">
+                <input id="guess"
+                       name="guess"
+                       class="guess-input"
+                       type="text"
+                       value="@Model.Guess"
+                       placeholder="Enter song title"
+                       autocomplete="off" />
+                <button type="submit" class="metal-button">Submit Guess</button>
+            </div>
+        </form>
+    </section>
+
+    @if (Model.IsAnswered && song is not null)
+    {
+        <section class="result-panel @(Model.IsCorrect ? "result-correct" : "result-wrong")">
+            <h2 class="section-title">Result</h2>
+            <p>@Model.FeedbackMessage</p>
+
+            <div class="result-grid">
+                <div class="album-cover-placeholder" aria-hidden="true">
+                    <span>@song.Album.Title</span>
+                </div>
+
+                <dl class="detail-grid">
+                    <dt>Correct answer</dt>
+                    <dd>@song.Title</dd>
+
+                    <dt>Band</dt>
+                    <dd>@song.Album.Band.Name</dd>
+
+                    <dt>Album</dt>
+                    <dd>@song.Album.Title (@song.Album.ReleaseYear)</dd>
+
+                    <dt>Genre</dt>
+                    <dd><span class="genre-badge">@song.Album.Band.Genre.Name</span></dd>
+                </dl>
+            </div>
+
+            <a class="inline-link" asp-controller="Song" asp-action="Details" asp-route-id="@song.Id">Open song details</a>
+        </section>
+    }
+</section>

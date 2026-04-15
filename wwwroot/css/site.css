@@ -1,22 +1,526 @@
-html {
-  font-size: 14px;
+:root {
+  --bg-0: #0a0a0a;
+  --bg-1: #111111;
+  --bg-2: #1a1a1a;
+  --red-0: #8b0000;
+  --red-1: #cc0000;
+  --bone: #e8e0d0;
+  --rust-gold: #b8860b;
+  --muted: #a89f90;
+  --sidebar-width: 220px;
+  --space-1: 8px;
+  --space-2: 16px;
+  --space-3: 24px;
+  --space-4: 32px;
 }
 
-@media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
+* {
+  box-sizing: border-box;
 }
 
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
-}
-
-html {
-  position: relative;
+html,
+body {
   min-height: 100%;
 }
 
 body {
-  margin-bottom: 60px;
+  margin: 0;
+  font-family: "Share Tech Mono", monospace;
+  font-size: 0.95rem;
+  color: var(--bone);
+  background:
+    radial-gradient(circle at 20% 10%, #1b1b1b 0%, transparent 45%),
+    radial-gradient(circle at 80% 85%, #190808 0%, transparent 38%),
+    linear-gradient(145deg, var(--bg-0), var(--bg-1));
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.13;
+  z-index: -1;
+  background-image:
+    radial-gradient(circle at 30% 20%, rgba(255, 255, 255, 0.5) 0.8px, transparent 1.1px),
+    radial-gradient(circle at 70% 80%, rgba(255, 255, 255, 0.4) 0.8px, transparent 1px);
+  background-size: 3px 3px, 4px 4px;
+}
+
+a {
+  color: var(--bone);
+  text-decoration: none;
+}
+
+a:hover {
+  color: var(--red-1);
+}
+
+.app-shell {
+  display: flex;
+  min-height: 100vh;
+}
+
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: var(--sidebar-width);
+  border-right: 1px solid #2b1a1a;
+  background: linear-gradient(180deg, #0d0d0d, #131313 40%, #0f0a0a 100%);
+  padding: var(--space-3) 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.brand-block {
+  padding: 0 var(--space-3) var(--space-3);
+}
+
+.brand-kicker {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.72rem;
+  letter-spacing: 0.17em;
+  text-transform: uppercase;
+}
+
+.brand-title {
+  display: inline-block;
+  margin-top: var(--space-1);
+  font-family: "Metal Mania", cursive;
+  font-size: 2rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar-link {
+  display: flex;
+  align-items: center;
+  min-height: 48px;
+  padding: 0 var(--space-3);
+  border-left: 3px solid transparent;
+  color: var(--bone);
+  font-size: 0.82rem;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+  transition: background-color 140ms ease, border-color 140ms ease;
+}
+
+.sidebar-link:hover {
+  border-left-color: var(--red-1);
+  background: #181010;
+}
+
+.sidebar-link.active {
+  border-left-color: var(--red-1);
+  background: #211515;
+}
+
+.sidebar-streak {
+  margin-top: auto;
+  padding: var(--space-3);
+  border-top: 1px solid #2b1a1a;
+}
+
+.mini-label {
+  display: block;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  font-size: 0.75rem;
+}
+
+.content-shell {
+  margin-left: var(--sidebar-width);
+  width: calc(100% - var(--sidebar-width));
+}
+
+.breadcrumbs-slot {
+  max-width: 1100px;
+  padding: var(--space-3) var(--space-3) 0;
+  margin: 0 auto;
+}
+
+.breadcrumbs {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  color: var(--bone);
+  font-size: 0.8rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.crumb-separator {
+  color: var(--muted);
+}
+
+.main-content {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: var(--space-3);
+}
+
+.page-title {
+  margin: 0 0 var(--space-2);
+  padding-left: var(--space-2);
+  border-left: 2px solid var(--red-1);
+  font-family: "Metal Mania", cursive;
+  font-size: clamp(2rem, 4vw, 3rem);
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+}
+
+.page-lead {
+  margin: 0 0 var(--space-3);
+  color: var(--muted);
+  max-width: 76ch;
+}
+
+.section-title {
+  margin: 0 0 var(--space-2);
+  font-family: "Metal Mania", cursive;
+  font-size: 1.5rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.eyebrow {
+  margin: 0 0 var(--space-1);
+  color: var(--rust-gold);
+  text-transform: uppercase;
+  letter-spacing: 0.13em;
+  font-size: 0.75rem;
+}
+
+.table-wrap {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.metal-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.metal-table thead th {
+  padding: var(--space-2);
+  text-align: left;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  font-size: 0.74rem;
+  border-bottom: 1px solid #2b1a1a;
+}
+
+.metal-table tbody tr {
+  background: var(--bg-1);
+}
+
+.metal-table tbody tr:nth-child(even) {
+  background: var(--bg-2);
+}
+
+.metal-table tbody td {
+  padding: var(--space-2);
+  border-bottom: 1px solid #211515;
+}
+
+.metal-table tbody td:first-child {
+  border-left: 3px solid transparent;
+}
+
+.metal-table tbody tr:hover td:first-child {
+  border-left-color: var(--red-1);
+}
+
+.metal-table-compact thead th,
+.metal-table-compact tbody td {
+  padding-top: 12px;
+  padding-bottom: 12px;
+}
+
+.detail-card {
+  margin-bottom: var(--space-3);
+  background: #121212;
+  border: 1px solid #2b1a1a;
+  border-top: 3px solid var(--red-1);
+  padding: var(--space-3);
+}
+
+.detail-grid {
+  margin: 0;
+  display: grid;
+  grid-template-columns: 200px minmax(0, 1fr);
+  gap: var(--space-2) var(--space-3);
+}
+
+.detail-grid dt {
+  margin: 0;
+  font-size: 0.75rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.detail-grid dd {
+  margin: 0;
+}
+
+.genre-badge {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: #5d0000;
+  color: var(--bone);
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+}
+
+.inline-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  font-size: 0.78rem;
+}
+
+.quiz-hero {
+  min-height: calc(100vh - 96px);
+}
+
+.hero-grid {
+  display: grid;
+  gap: var(--space-3);
+  grid-template-columns: 2fr 1fr;
+  margin-bottom: var(--space-3);
+}
+
+.art-placeholder {
+  position: relative;
+  min-height: 220px;
+  border: 1px solid #3b1d1d;
+  background:
+    linear-gradient(110deg, #2b0f0f 0%, #120f12 55%, #1f1812 100%);
+  overflow: hidden;
+  display: flex;
+  align-items: flex-end;
+  padding: var(--space-2);
+}
+
+.art-placeholder span {
+  position: relative;
+  z-index: 2;
+  color: var(--muted);
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.art-noise {
+  position: absolute;
+  inset: 0;
+  opacity: 0.26;
+  filter: blur(0.3px);
+  background-image:
+    repeating-linear-gradient(90deg, transparent, transparent 2px, rgba(255, 255, 255, 0.08) 3px),
+    radial-gradient(circle at 30% 50%, rgba(255, 255, 255, 0.12), transparent 56%);
+}
+
+.streak-card {
+  border: 1px solid #2b1a1a;
+  border-top: 3px solid var(--red-1);
+  background: #121212;
+  padding: var(--space-3);
+}
+
+.streak-value {
+  margin: var(--space-1) 0 var(--space-3);
+  font-family: "Metal Mania", cursive;
+  font-size: 2rem;
+  color: var(--rust-gold);
+}
+
+.quiz-panel {
+  border: 1px solid #2b1a1a;
+  border-top: 3px solid var(--red-1);
+  background: #121212;
+  padding: var(--space-3);
+}
+
+.clue-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 var(--space-3);
+  display: grid;
+  gap: var(--space-1);
+}
+
+.clue-list li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--bg-2);
+  padding: 12px var(--space-2);
+  border-left: 3px solid transparent;
+}
+
+.clue-list li.revealed {
+  border-left-color: var(--red-1);
+}
+
+.clue-list li.locked strong {
+  color: #80756a;
+}
+
+.clue-list li.revealed strong {
+  color: var(--rust-gold);
+}
+
+.quiz-form {
+  display: grid;
+  gap: var(--space-1);
+}
+
+.guess-row {
+  display: flex;
+  gap: var(--space-2);
+}
+
+.guess-input {
+  flex: 1;
+  min-height: 44px;
+  background: #0e0e0e;
+  border: 1px solid #472020;
+  color: var(--bone);
+  padding: 0 var(--space-2);
+  font-family: "Share Tech Mono", monospace;
+}
+
+.guess-input:focus {
+  outline: 1px solid var(--red-1);
+  border-color: var(--red-1);
+}
+
+.metal-button {
+  min-height: 44px;
+  border: 1px solid var(--red-1);
+  background: var(--red-0);
+  color: #fff;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-size: 0.75rem;
+  padding: 0 16px;
+}
+
+.metal-button:hover {
+  background: var(--red-1);
+}
+
+.metal-button-ghost {
+  width: 100%;
+  background: transparent;
+  color: var(--bone);
+}
+
+.metal-button-ghost:hover {
+  background: #221313;
+}
+
+.result-panel {
+  margin-top: var(--space-3);
+  border: 1px solid #2b1a1a;
+  border-top: 3px solid var(--red-1);
+  background: #121212;
+  padding: var(--space-3);
+}
+
+.result-panel.result-correct {
+  border-top-color: var(--rust-gold);
+}
+
+.result-grid {
+  display: grid;
+  grid-template-columns: minmax(180px, 240px) minmax(0, 1fr);
+  gap: var(--space-3);
+  margin-bottom: var(--space-2);
+}
+
+.album-cover-placeholder {
+  min-height: 180px;
+  display: grid;
+  place-items: center;
+  text-align: center;
+  padding: var(--space-2);
+  border: 1px solid #472020;
+  background: linear-gradient(160deg, #321212, #101010);
+  color: var(--bone);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+
+@media (max-width: 980px) {
+  .sidebar {
+    position: static;
+    width: 100%;
+    min-height: auto;
+    border-right: 0;
+    border-bottom: 1px solid #2b1a1a;
+  }
+
+  .sidebar-nav {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  .sidebar-link {
+    width: 50%;
+  }
+
+  .sidebar-streak {
+    border-top: 0;
+  }
+
+  .content-shell {
+    margin-left: 0;
+    width: 100%;
+  }
+
+  .hero-grid,
+  .result-grid,
+  .detail-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .detail-grid dt {
+    margin-bottom: -8px;
+  }
+
+  .quiz-hero {
+    min-height: auto;
+  }
+}
+
+@media (max-width: 640px) {
+  .sidebar-link {
+    width: 100%;
+  }
+
+  .main-content,
+  .breadcrumbs-slot {
+    padding-left: var(--space-2);
+    padding-right: var(--space-2);
+  }
+
+  .guess-row {
+    flex-direction: column;
+  }
 }

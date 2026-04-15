@@ -1,0 +1,50 @@
+@model BandIndexViewModel
+@{
+    ViewData["Title"] = "Bands";
+}
+
+@section Breadcrumbs {
+    @await Html.PartialAsync("_Breadcrumbs")
+}
+
+<h1 class="page-title">Bands</h1>
+<p class="page-lead">Browse the metal line-up powering the daily quiz catalog.</p>
+
+<div class="table-wrap">
+    <table class="metal-table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Formed</th>
+                <th>Country</th>
+                <th>Genre</th>
+                <th>Albums</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.Bands.Count == 0)
+            {
+                <tr>
+                    <td colspan="6">No bands available.</td>
+                </tr>
+            }
+            else
+            {
+                @foreach (var band in Model.Bands.OrderBy(item => item.Name))
+                {
+                    <tr>
+                        <td>@band.Name</td>
+                        <td>@band.FormedYear</td>
+                        <td>@band.Country</td>
+                        <td><span class="genre-badge">@band.Genre.Name</span></td>
+                        <td>@band.Albums.Count</td>
+                        <td>
+                            <a class="inline-link" asp-controller="Band" asp-action="Details" asp-route-id="@band.Id">View details</a>
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>

@@ -1,0 +1,44 @@
+@model SongDetailsViewModel
+@{
+    ViewData["Title"] = "Song Details";
+    var song = Model.Song;
+}
+
+@section Breadcrumbs {
+    @await Html.PartialAsync("_Breadcrumbs")
+}
+
+@if (song is null)
+{
+    <h1 class="page-title">Song not found</h1>
+    <p class="page-lead">The requested song does not exist in the mock repository.</p>
+}
+else
+{
+    <h1 class="page-title">@song.Title</h1>
+
+    <section class="detail-card">
+        <dl class="detail-grid">
+            <dt>Band</dt>
+            <dd>
+                <a class="inline-link" asp-controller="Band" asp-action="Details" asp-route-id="@song.Album.Band.Id">@song.Album.Band.Name</a>
+            </dd>
+
+            <dt>Album</dt>
+            <dd>
+                <a class="inline-link" asp-controller="Album" asp-action="Details" asp-route-id="@song.Album.Id">@song.Album.Title</a>
+            </dd>
+
+            <dt>Duration</dt>
+            <dd>@TimeSpan.FromSeconds(song.DurationSeconds).ToString(@"m\:ss")</dd>
+
+            <dt>Opening lyric clue</dt>
+            <dd>@song.OpeningLyric</dd>
+
+            <dt>Genre</dt>
+            <dd><span class="genre-badge">@song.Album.Band.Genre.Name</span></dd>
+        </dl>
+    </section>
+
+    <a class="inline-link" asp-controller="Song" asp-action="Index">&larr; Back to list</a>
+}

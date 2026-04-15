@@ -1,0 +1,44 @@
+@model GenreIndexViewModel
+@{
+    ViewData["Title"] = "Genres";
+}
+
+@section Breadcrumbs {
+    @await Html.PartialAsync("_Breadcrumbs")
+}
+
+<h1 class="page-title">Genres</h1>
+<p class="page-lead">Metal subgenres available in the quiz catalog.</p>
+
+<div class="table-wrap">
+    <table class="metal-table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.Genres.Count == 0)
+            {
+                <tr>
+                    <td colspan="3">No genres available.</td>
+                </tr>
+            }
+            else
+            {
+                @foreach (var genre in Model.Genres.OrderBy(item => item.Name))
+                {
+                    <tr>
+                        <td><span class="genre-badge">@genre.Name</span></td>
+                        <td>@genre.Description</td>
+                        <td>
+                            <a class="inline-link" asp-controller="Genre" asp-action="Details" asp-route-id="@genre.Id">View details</a>
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>

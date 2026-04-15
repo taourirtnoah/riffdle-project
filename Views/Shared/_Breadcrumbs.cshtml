@@ -1,0 +1,29 @@
+@{
+    var breadcrumbs = (ViewData["Breadcrumbs"] as IEnumerable<(string Label, string? Url)>)?.ToList()
+                      ?? new List<(string Label, string? Url)>();
+}
+
+@if (breadcrumbs.Count > 0)
+{
+    <nav class="breadcrumbs" aria-label="Breadcrumbs">
+        @for (var i = 0; i < breadcrumbs.Count; i++)
+        {
+            var crumb = breadcrumbs[i];
+            var isLast = i == breadcrumbs.Count - 1;
+
+            if (!string.IsNullOrWhiteSpace(crumb.Url) && !isLast)
+            {
+                <a href="@crumb.Url">@crumb.Label</a>
+            }
+            else
+            {
+                <span>@crumb.Label</span>
+            }
+
+            if (!isLast)
+            {
+                <span class="crumb-separator">/</span>
+            }
+        }
+    </nav>
+}

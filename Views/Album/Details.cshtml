@@ -1,0 +1,67 @@
+@model AlbumDetailsViewModel
+@{
+    ViewData["Title"] = "Album Details";
+    var album = Model.Album;
+}
+
+@section Breadcrumbs {
+    @await Html.PartialAsync("_Breadcrumbs")
+}
+
+@if (album is null)
+{
+    <h1 class="page-title">Album not found</h1>
+    <p class="page-lead">The requested album does not exist in the mock repository.</p>
+}
+else
+{
+    <h1 class="page-title">@album.Title</h1>
+
+    <section class="detail-card">
+        <dl class="detail-grid">
+            <dt>Band</dt>
+            <dd>
+                <a class="inline-link" asp-controller="Band" asp-action="Details" asp-route-id="@album.Band.Id">@album.Band.Name</a>
+            </dd>
+
+            <dt>Release year</dt>
+            <dd>@album.ReleaseYear</dd>
+
+            <dt>Total songs</dt>
+            <dd>@album.Songs.Count</dd>
+
+            <dt>Genre</dt>
+            <dd><span class="genre-badge">@album.Band.Genre.Name</span></dd>
+        </dl>
+    </section>
+
+    <section class="detail-card">
+        <h2 class="section-title">Songs</h2>
+
+        <div class="table-wrap">
+            <table class="metal-table metal-table-compact">
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Duration</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var song in album.Songs)
+                    {
+                        <tr>
+                            <td>@song.Title</td>
+                            <td>@TimeSpan.FromSeconds(song.DurationSeconds).ToString(@"m\:ss")</td>
+                            <td>
+                                <a class="inline-link" asp-controller="Song" asp-action="Details" asp-route-id="@song.Id">View details</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <a class="inline-link" asp-controller="Album" asp-action="Index">&larr; Back to list</a>
+}

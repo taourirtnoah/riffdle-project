@@ -1,0 +1,70 @@
+@model GenreDetailsViewModel
+@{
+    ViewData["Title"] = "Genre Details";
+    var genre = Model.Genre;
+}
+
+@section Breadcrumbs {
+    @await Html.PartialAsync("_Breadcrumbs")
+}
+
+@if (genre is null)
+{
+    <h1 class="page-title">Genre not found</h1>
+    <p class="page-lead">The requested genre does not exist in the mock repository.</p>
+}
+else
+{
+    <h1 class="page-title">@genre.Name</h1>
+
+    <section class="detail-card">
+        <dl class="detail-grid">
+            <dt>Description</dt>
+            <dd>@genre.Description</dd>
+
+            <dt>Bands in genre</dt>
+            <dd>@Model.Bands.Count</dd>
+        </dl>
+    </section>
+
+    <section class="detail-card">
+        <h2 class="section-title">Bands</h2>
+
+        <div class="table-wrap">
+            <table class="metal-table metal-table-compact">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Country</th>
+                        <th>Formed</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model.Bands.Count == 0)
+                    {
+                        <tr>
+                            <td colspan="4">No bands mapped to this genre.</td>
+                        </tr>
+                    }
+                    else
+                    {
+                        @foreach (var band in Model.Bands)
+                        {
+                            <tr>
+                                <td>@band.Name</td>
+                                <td>@band.Country</td>
+                                <td>@band.FormedYear</td>
+                                <td>
+                                    <a class="inline-link" asp-controller="Band" asp-action="Details" asp-route-id="@band.Id">View details</a>
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <a class="inline-link" asp-controller="Genre" asp-action="Index">&larr; Back to list</a>
+}
