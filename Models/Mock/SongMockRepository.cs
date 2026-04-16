@@ -1,10 +1,12 @@
 using Riffdle.Models.Domain;
+using System.Security.Cryptography;
 
 namespace Riffdle.Models.Mock;
 
 public class SongMockRepository
 {
     private readonly List<Song> _songs;
+    private Song? _dailyQuizSong;
 
     public SongMockRepository(AlbumMockRepository albumRepository)
     {
@@ -130,7 +132,7 @@ public class SongMockRepository
                 .ToList();
         }
 
-        return;
+        SelectRandomDailyQuizSong();
 
         void AddAlbumSongs(string albumTitle, params (string title, int duration, string lyric)[] entries)
         {
@@ -148,8 +150,7 @@ public class SongMockRepository
                     DurationSeconds = duration,
                     Album = album,
                     OpeningLyric = lyric,
-                    IsDailyQuizSong = albumTitle == "Master of Puppets" &&
-                                      title == "Master of Puppets"
+                    IsDailyQuizSong = false
                 });
             }
         }
@@ -167,6 +168,40 @@ public class SongMockRepository
 
     public Song? GetDailyQuizSong()
     {
-        return _songs.FirstOrDefault(song => song.IsDailyQuizSong);
+        return _dailyQuizSong;
+    }
+
+    public Song? ResetDailyQuizSong()
+    {
+        return SelectRandomDailyQuizSong(_dailyQuizSong?.Id);
+    }
+
+    private Song? SelectRandomDailyQuizSong(int? excludeSongId = null)
+    {
+        if (_dailyQuizSong is not null)
+        {
+            _dailyQuizSong.IsDailyQuizSong = false;
+        }
+
+        var candidates = _songs
+            .Where(song => excludeSongId is null || song.Id != excludeSongId.Value)
+            .ToList();
+
+        if (candidates.Count == 0)
+        {
+            candidates = _songs.ToList();
+        }
+
+        if (candidates.Count == 0)
+        {
+            _dailyQuizSong = null;
+            return null;
+        }
+
+        var randomIndex = RandomNumberGenerator.GetInt32(candidates.Count);
+        _dailyQuizSong = candidates[randomIndex];
+        _dailyQuizSong.IsDailyQuizSong = true;
+
+        return _dailyQuizSong;
     }
 }

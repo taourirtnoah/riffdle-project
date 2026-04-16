@@ -42,9 +42,19 @@ body::before {
   opacity: 0.13;
   z-index: -1;
   background-image:
-    radial-gradient(circle at 30% 20%, rgba(255, 255, 255, 0.5) 0.8px, transparent 1.1px),
-    radial-gradient(circle at 70% 80%, rgba(255, 255, 255, 0.4) 0.8px, transparent 1px);
-  background-size: 3px 3px, 4px 4px;
+    radial-gradient(
+      circle at 30% 20%,
+      rgba(255, 255, 255, 0.5) 0.8px,
+      transparent 1.1px
+    ),
+    radial-gradient(
+      circle at 70% 80%,
+      rgba(255, 255, 255, 0.4) 0.8px,
+      transparent 1px
+    );
+  background-size:
+    3px 3px,
+    4px 4px;
 }
 
 a {
@@ -110,7 +120,9 @@ a:hover {
   font-size: 0.82rem;
   letter-spacing: 0.11em;
   text-transform: uppercase;
-  transition: background-color 140ms ease, border-color 140ms ease;
+  transition:
+    background-color 140ms ease,
+    border-color 140ms ease;
 }
 
 .sidebar-link:hover {
@@ -270,6 +282,46 @@ a:hover {
   color: var(--muted);
 }
 
+.guess-history-container {
+  margin-top: var(--space-3);
+  border: 1px solid #2b1a1a;
+  background: #0a0a0a;
+  padding: var(--space-3);
+}
+
+.guess-history-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.guess-badge {
+  display: inline-block;
+  padding: 8px 12px;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  font-weight: bold;
+  text-transform: capitalize;
+  border: 2px solid;
+}
+
+.guess-badge.incorrect {
+  background: rgba(139, 0, 0, 0.2);
+  color: #ff6b6b;
+  border-color: #cc0000;
+}
+
+.guess-badge.same-band {
+  background: rgba(184, 134, 11, 0.2);
+  color: #ffd166;
+  border-color: #d4a017;
+}
+
+.guess-badge.correct {
+  background: rgba(34, 139, 34, 0.2);
+  color: #7fff7f;
+  border-color: #4caf50;
+}
 .detail-grid dd {
   margin: 0;
 }
@@ -308,8 +360,7 @@ a:hover {
   position: relative;
   min-height: 220px;
   border: 1px solid #3b1d1d;
-  background:
-    linear-gradient(110deg, #2b0f0f 0%, #120f12 55%, #1f1812 100%);
+  background: linear-gradient(110deg, #2b0f0f 0%, #120f12 55%, #1f1812 100%);
   overflow: hidden;
   display: flex;
   align-items: flex-end;
@@ -331,8 +382,17 @@ a:hover {
   opacity: 0.26;
   filter: blur(0.3px);
   background-image:
-    repeating-linear-gradient(90deg, transparent, transparent 2px, rgba(255, 255, 255, 0.08) 3px),
-    radial-gradient(circle at 30% 50%, rgba(255, 255, 255, 0.12), transparent 56%);
+    repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent 2px,
+      rgba(255, 255, 255, 0.08) 3px
+    ),
+    radial-gradient(
+      circle at 30% 50%,
+      rgba(255, 255, 255, 0.12),
+      transparent 56%
+    );
 }
 
 .streak-card {
@@ -395,8 +455,13 @@ a:hover {
   gap: var(--space-2);
 }
 
-.guess-input {
+.guess-input-wrap {
+  position: relative;
   flex: 1;
+}
+
+.guess-input {
+  width: 100%;
   min-height: 44px;
   background: #0e0e0e;
   border: 1px solid #472020;
@@ -408,6 +473,37 @@ a:hover {
 .guess-input:focus {
   outline: 1px solid var(--red-1);
   border-color: var(--red-1);
+}
+
+.guess-suggestions {
+  display: none;
+  position: absolute;
+  z-index: 10;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  list-style: none;
+  margin: 0;
+  padding: 6px 0;
+  border: 1px solid #472020;
+  background: #121212;
+  max-height: 220px;
+  overflow-y: auto;
+}
+
+.guess-suggestions.open {
+  display: block;
+}
+
+.guess-suggestion-item {
+  padding: 10px 12px;
+  cursor: pointer;
+  color: var(--bone);
+}
+
+.guess-suggestion-item:hover {
+  background: #2a1515;
+  color: var(--rust-gold);
 }
 
 .metal-button {
@@ -452,6 +548,10 @@ a:hover {
   grid-template-columns: minmax(180px, 240px) minmax(0, 1fr);
   gap: var(--space-3);
   margin-bottom: var(--space-2);
+}
+
+.play-again-form {
+  margin-top: var(--space-2);
 }
 
 .album-cover-placeholder {

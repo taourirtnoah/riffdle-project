@@ -47,22 +47,48 @@
         <form asp-controller="Home" asp-action="Index" method="post" class="quiz-form">
             @Html.AntiForgeryToken()
             <input type="hidden" name="attemptCount" value="@Model.AttemptCount" />
+            <input type="hidden" name="previousGuesses" value="@string.Join("|", Model.PreviousGuesses)" />
 
             <label for="guess" class="mini-label">Your guess</label>
             <div class="guess-row">
-                <input id="guess"
-                       name="guess"
-                       class="guess-input"
-                       type="text"
-                       value="@Model.Guess"
-                       placeholder="Enter song title"
-                       autocomplete="off" />
+                <div class="guess-input-wrap">
+                    <input id="guess"
+                           name="guess"
+                           class="guess-input"
+                           type="text"
+                           value=""
+                           placeholder="Enter song title"
+                           autocomplete="off" />
+                    <ul id="guess-suggestions" class="guess-suggestions" role="listbox" aria-label="Song suggestions"></ul>
+                </div>
                 <button type="submit" class="metal-button">Submit Guess</button>
             </div>
         </form>
+
+        <script id="available-song-titles" type="application/json">@Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.AvailableSongs))</script>
+
+    @if (Model.GuessHistory.Count > 0)
+    {
+        <section class="guess-history-container">
+            <h3 class="section-title">Your guesses</h3>
+            <div class="guess-history-list">
+                @foreach (var entry in Model.GuessHistory)
+                {
+                    var badgeClass = entry.Outcome switch
+                    {
+                        GuessOutcome.Correct => "correct",
+                        GuessOutcome.SameBand => "same-band",
+                        _ => "incorrect"
+                    };
+
+                    <span class="guess-badge @badgeClass">@entry.Guess</span>
+                }
+            </div>
+        </section>
+    }
     </section>
 
-    @if (Model.IsAnswered && song is not null)
+    @if (Model.ShouldShowResult && song is not null)
     {
         <section class="result-panel @(Model.IsCorrect ? "result-correct" : "result-wrong")">
             <h2 class="section-title">Result</h2>
@@ -89,6 +115,11 @@
             </div>
 
             <a class="inline-link" asp-controller="Song" asp-action="Details" asp-route-id="@song.Id">Open song details</a>
+
+            <form asp-controller="Home" asp-action="PlayAgain" method="post" class="play-again-form">
+                @Html.AntiForgeryToken()
+                <button type="submit" class="metal-button">Play Again</button>
+            </form>
         </section>
     }
 </section>

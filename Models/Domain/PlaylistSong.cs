@@ -1,4 +1,4 @@
-namespace Riffdle.Models.Lab1;
+namespace Riffdle.Models.Domain;
 
 public class PlaylistSong
 {

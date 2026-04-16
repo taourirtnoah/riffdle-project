@@ -2,14 +2,34 @@ using Riffdle.Models.Domain;
 
 namespace Riffdle.Models.ViewModels;
 
+public enum GuessOutcome
+{
+    Incorrect,
+    SameBand,
+    Correct
+}
+
+public class GuessHistoryEntry
+{
+    public string Guess { get; set; } = string.Empty;
+    public GuessOutcome Outcome { get; set; }
+}
+
 public class DailyQuizViewModel
 {
+    public const int MaxAttempts = 5;
+
     public Song? DailySong { get; set; }
     public string Guess { get; set; } = string.Empty;
     public bool IsAnswered { get; set; }
     public bool IsCorrect { get; set; }
     public int AttemptCount { get; set; }
     public string FeedbackMessage { get; set; } = string.Empty;
+    public List<string> PreviousGuesses { get; set; } = new();
+    public List<GuessHistoryEntry> GuessHistory { get; set; } = new();
+    public List<string> AvailableSongs { get; set; } = new();
+
+    public bool ShouldShowResult => IsCorrect || AttemptCount >= MaxAttempts;
 
     public string BandInitials
     {

@@ -1,4 +1,4 @@
-namespace Riffdle.Models.Lab1;
+namespace Riffdle.Models.Domain;
 
 public class Hint
 {
@@ -8,4 +8,13 @@ public class Hint
     public HintType Type { get; set; }
     public int Order { get; set; }
     public string Content { get; set; } = string.Empty;
+}
+
+public enum HintType
+{
+    AlbumName,
+    SongReleaseYear,
+    AudioSnippet,
+    AlbumCover,
+    BandName
 }
