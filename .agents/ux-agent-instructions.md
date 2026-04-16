@@ -13,7 +13,7 @@ before any UI code is written.
 - Typography: use Google Fonts — "Metal Mania" for headings, "Share Tech Mono"
   for body/data text (monospace feel, like a terminal/setlist)
 - Texture: subtle noise/grain CSS filter on the body background
-- NO default Bootstrap navbar or card styles — override everything
+- NO default Bootstrap navbar or card styles — override everything with custom CSS
 
 ## Layout Principles
 - Fixed left-side vertical navigation panel (width: 220px) with band logo /
@@ -61,4 +61,4 @@ before any UI code is written.
 ## Do NOT Use
 - Default Bootstrap navbar, jumbotron, or card classes
 - Any pastel or light color schemes
-- Centered hero text layouts typical of generic Bootstrap templates
+- Centered hero text layouts typical of generic Bootstrap templates 
