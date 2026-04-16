@@ -88,8 +88,8 @@ a:hover {
   padding: 0 var(--space-3) var(--space-3);
 }
 
-.brand-kicker {
-  margin: 0;
+.brand-subtitle {
+  margin: var(--space-1) 0 0 0;
   color: var(--muted);
   font-size: 0.72rem;
   letter-spacing: 0.17em;

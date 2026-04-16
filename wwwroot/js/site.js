@@ -88,3 +88,44 @@
 		}
 	});
 })();
+
+(function () {
+	const shareBtn = document.getElementById("share-result-btn");
+
+	if (!shareBtn) {
+		return;
+	}
+
+	const isCompleted = shareBtn.dataset.isCompleted === "true";
+	const isCorrect = shareBtn.dataset.isCorrect === "true";
+	const attemptCount = parseInt(shareBtn.dataset.attemptCount, 10);
+
+	shareBtn.addEventListener("click", async (event) => {
+		event.preventDefault();
+
+		if (!isCompleted) {
+			alert("Complete the daily challenge first!");
+			return;
+		}
+
+		const siteUrl = window.location.origin;
+		const resultStatus = isCorrect
+			? `✓ Solved in ${attemptCount} guess${attemptCount === 1 ? "" : "es"}`
+			: `✗ Failed to solve (${attemptCount}/${5} guesses)`;
+
+		const shareMessage = `🎸 Riffdle Daily Challenge\n${resultStatus}\n\n${siteUrl}`;
+
+		try {
+			await navigator.clipboard.writeText(shareMessage);
+			
+			const originalText = shareBtn.textContent;
+			shareBtn.textContent = "✓ Copied to clipboard";
+			setTimeout(() => {
+				shareBtn.textContent = originalText;
+			}, 2000);
+		} catch (err) {
+			console.error("Failed to copy to clipboard:", err);
+			alert("Could not copy to clipboard. Your result:\n\n" + shareMessage);
+		}
+	});
+})();

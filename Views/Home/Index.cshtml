@@ -19,7 +19,14 @@
         <aside class="streak-card">
             <p class="mini-label">Current streak</p>
             <p class="streak-value">@streak days</p>
-            <button type="button" class="metal-button metal-button-ghost">Share Today's Result</button>
+            <button type="button" 
+                    id="share-result-btn"
+                    class="metal-button metal-button-ghost"
+                    data-is-completed="@(Model.ShouldShowResult ? "true" : "false")"
+                    data-is-correct="@(Model.IsCorrect ? "true" : "false")"
+                    data-attempt-count="@Model.AttemptCount">
+                Share Today's Result
+            </button>
         </aside>
     </div>
 
@@ -27,20 +34,20 @@
         <h2 class="section-title">Clues</h2>
         <ul class="clue-list">
             <li class="@(Model.AttemptCount >= 1 ? "revealed" : "locked")">
-                <span>Band initials</span>
-                <strong>@(Model.AttemptCount >= 1 ? Model.BandInitials : "Locked")</strong>
+                <span>Album year</span>
+                <strong>@(Model.AttemptCount >= 1 ? Model.AlbumYear.ToString() : "Locked")</strong>
             </li>
             <li class="@(Model.AttemptCount >= 2 ? "revealed" : "locked")">
-                <span>Album year</span>
-                <strong>@(Model.AttemptCount >= 2 ? Model.AlbumYear.ToString() : "Locked")</strong>
+                <span>First lyric</span>
+                <strong>@(Model.AttemptCount >= 2 ? Model.FirstLyric : "Locked")</strong>
             </li>
             <li class="@(Model.AttemptCount >= 3 ? "revealed" : "locked")">
                 <span>Genre</span>
                 <strong>@(Model.AttemptCount >= 3 ? Model.GenreName : "Locked")</strong>
             </li>
             <li class="@(Model.AttemptCount >= 4 ? "revealed" : "locked")">
-                <span>First lyric</span>
-                <strong>@(Model.AttemptCount >= 4 ? Model.FirstLyric : "Locked")</strong>
+                <span>Band initials</span>
+                <strong>@(Model.AttemptCount >= 4 ? Model.BandInitials : "Locked")</strong>
             </li>
         </ul>
 
