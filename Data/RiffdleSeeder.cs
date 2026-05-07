@@ -8,12 +8,22 @@ public static class RiffdleSeeder
 {
     public static void Seed(RiffdleDbContext context)
     {
-        if (context.Genres.Any())
+        var genres = EnsureGenres(context);
+        var bands = EnsureBands(context, genres);
+        var albums = EnsureAlbums(context, bands);
+        var songs = EnsureSongs(context, albums);
+        EnsurePlaylists(context, songs);
+    }
+
+    private static List<Genre> EnsureGenres(RiffdleDbContext context)
+    {
+        var genres = context.Genres.ToList();
+        if (genres.Count > 0)
         {
-            return;
+            return genres;
         }
 
-        var genres = new List<Genre>
+        genres = new List<Genre>
         {
             new() { Name = "Thrash Metal", Description = "Fast and aggressive riffs built on precision rhythm guitar." },
             new() { Name = "Heavy Metal", Description = "Classic high-energy metal with anthem choruses and twin-guitar leads." },
@@ -24,8 +34,18 @@ public static class RiffdleSeeder
 
         context.AddRange(genres);
         context.SaveChanges();
+        return genres;
+    }
 
-        var bands = new List<Band>
+    private static List<Band> EnsureBands(RiffdleDbContext context, List<Genre> genres)
+    {
+        var bands = context.Bands.ToList();
+        if (bands.Count > 0)
+        {
+            return bands;
+        }
+
+        bands = new List<Band>
         {
             new() { Name = "Metallica", FormedYear = 1981, Country = "United States", Genre = genres.First(g => g.Name == "Thrash Metal"), Description = "Thrash pioneers known for sharp riff architecture and arena-scale songwriting." },
             new() { Name = "Iron Maiden", FormedYear = 1975, Country = "United Kingdom", Genre = genres.First(g => g.Name == "Heavy Metal"), Description = "New Wave of British Heavy Metal legends with narrative epics and galloping rhythm sections." },
@@ -37,8 +57,18 @@ public static class RiffdleSeeder
 
         context.AddRange(bands);
         context.SaveChanges();
+        return bands;
+    }
 
-        var albums = new List<Album>
+    private static List<Album> EnsureAlbums(RiffdleDbContext context, List<Band> bands)
+    {
+        var albums = context.Albums.ToList();
+        if (albums.Count > 0)
+        {
+            return albums;
+        }
+
+        albums = new List<Album>
         {
             new() { Title = "Ride the Lightning", ReleaseYear = 1984, Band = bands[0] },
             new() { Title = "Master of Puppets", ReleaseYear = 1986, Band = bands[0] },
@@ -62,8 +92,18 @@ public static class RiffdleSeeder
 
         context.AddRange(albums);
         context.SaveChanges();
+        return albums;
+    }
 
-        var songs = new List<Song>();
+    private static List<Song> EnsureSongs(RiffdleDbContext context, List<Album> albums)
+    {
+        var songs = context.Songs.ToList();
+        if (songs.Count > 0)
+        {
+            return songs;
+        }
+
+        songs = new List<Song>();
 
         void AddAlbumSongs(int albumIndex, params (string title, int duration, string lyric)[] entries)
         {
@@ -190,6 +230,39 @@ public static class RiffdleSeeder
             ("7 Days to the Wolves", 455, "Footsteps gather on the ridge."));
 
         context.AddRange(songs);
+        context.SaveChanges();
+        return songs;
+    }
+
+    private static void EnsurePlaylists(RiffdleDbContext context, List<Song> songs)
+    {
+        if (context.UserPlaylists.Any())
+        {
+            return;
+        }
+
+        var featuredPlaylist = new UserPlaylist
+        {
+            Name = "Starter Setlist",
+            OwnerUserName = "riffdle",
+            Description = "A short demo playlist used to showcase the new playlist page.",
+            CreatedAt = DateTime.UtcNow,
+            IsPublic = true,
+            Likes = 12
+        };
+
+        context.UserPlaylists.Add(featuredPlaylist);
+        context.SaveChanges();
+
+        var selectedSongs = songs.Take(4).ToList();
+        var playlistSongs = selectedSongs.Select(song => new PlaylistSong
+        {
+            Playlist = featuredPlaylist,
+            Song = song,
+            AddedAt = DateTime.UtcNow
+        }).ToList();
+
+        context.PlaylistSongs.AddRange(playlistSongs);
         context.SaveChanges();
     }
 }

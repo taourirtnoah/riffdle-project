@@ -1,0 +1,58 @@
+@model PlaylistIndexViewModel
+@{
+    ViewData["Title"] = "Playlists";
+}
+
+@section Breadcrumbs {
+    @await Html.PartialAsync("_Breadcrumbs")
+}
+
+<h1 class="page-title">Playlists</h1>
+<p class="page-lead">A small demo page built from the new playlist EF model.</p>
+
+<div class="table-wrap">
+    <table class="metal-table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Owner</th>
+                <th>Songs</th>
+                <th>Likes</th>
+                <th>Visibility</th>
+                <th>Created</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.Playlists.Count == 0)
+            {
+                <tr>
+                    <td colspan="6">No playlists available.</td>
+                </tr>
+            }
+            else
+            {
+                @foreach (var playlist in Model.Playlists)
+                {
+                    <tr>
+                        <td>@playlist.Name</td>
+                        <td>@playlist.OwnerUserName</td>
+                        <td>@(playlist.PlaylistSongs?.Count ?? 0)</td>
+                        <td>@playlist.Likes</td>
+                        <td>@(playlist.IsPublic ? "Public" : "Private")</td>
+                        <td>@playlist.CreatedAt.ToString("yyyy-MM-dd")</td>
+                    </tr>
+                    <tr>
+                        <td colspan="6">
+                            <div class="playlist-tracklist">
+                                @foreach (var track in (playlist.PlaylistSongs ?? Enumerable.Empty<Riffdle.Models.Domain.PlaylistSong>()).OrderBy(item => item.AddedAt))
+                                {
+                                    <span class="guess-badge">@(track.Song?.Title ?? "Unknown track")</span>
+                                }
+                            </div>
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>

@@ -17,10 +17,17 @@ var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
 {
-    var dbContextFactory = scope.ServiceProvider.GetRequiredService<IDbContextFactory<RiffdleDbContext>>();
-    using var dbContext = dbContextFactory.CreateDbContext();
-    dbContext.Database.EnsureCreated();
-    RiffdleSeeder.Seed(dbContext);
+    try
+    {
+        var dbContextFactory = scope.ServiceProvider.GetRequiredService<IDbContextFactory<RiffdleDbContext>>();
+        using var dbContext = dbContextFactory.CreateDbContext();
+        dbContext.Database.EnsureCreated();
+        RiffdleSeeder.Seed(dbContext);
+    }
+    catch (Exception exception)
+    {
+        Console.WriteLine($"Database initialization skipped: {exception.Message}");
+    }
 }
 
 // Configure the HTTP request pipeline.

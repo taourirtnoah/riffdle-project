@@ -147,15 +147,16 @@ namespace Riffdle.Controllers
             foreach (var previousGuess in previousGuesses)
             {
                 var outcome = GuessOutcome.Incorrect;
+                var dailyBandId = dailySong.Album?.Band?.Id;
 
                 if (string.Equals(previousGuess, dailySong.Title, StringComparison.OrdinalIgnoreCase))
                 {
                     outcome = GuessOutcome.Correct;
                 }
                 else if (songsByTitle.TryGetValue(previousGuess, out var guessedSong) &&
-                         guessedSong?.Album?.Band != null &&
-                         dailySong?.Album?.Band != null &&
-                         guessedSong.Album.Band.Id == dailySong.Album.Band.Id)
+                         guessedSong.Album?.Band?.Id is int guessedBandId &&
+                         dailyBandId.HasValue &&
+                         guessedBandId == dailyBandId.Value)
                 {
                     outcome = GuessOutcome.SameBand;
                 }
