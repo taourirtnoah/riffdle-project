@@ -37,8 +37,8 @@
                         <td>@band.Name</td>
                         <td>@band.FormedYear</td>
                         <td>@band.Country</td>
-                        <td><span class="genre-badge">@band.Genre.Name</span></td>
-                        <td>@band.Albums.Count</td>
+                        <td><span class="genre-badge">@(band.Genre?.Name ?? "Unknown")</span></td>
+                        <td>@(band.Albums?.Count ?? 0)</td>
                         <td>
                             <a class="inline-link" asp-controller="Band" asp-action="Details" asp-route-id="@band.Id">View details</a>
                         </td>

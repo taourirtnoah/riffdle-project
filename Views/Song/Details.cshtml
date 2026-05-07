@@ -21,12 +21,26 @@ else
         <dl class="detail-grid">
             <dt>Band</dt>
             <dd>
-                <a class="inline-link" asp-controller="Band" asp-action="Details" asp-route-id="@song.Album.Band.Id">@song.Album.Band.Name</a>
+                @if (song.Album?.Band is not null)
+                {
+                    <a class="inline-link" asp-controller="Band" asp-action="Details" asp-route-id="@song.Album.Band.Id">@song.Album.Band.Name</a>
+                }
+                else
+                {
+                    <span>Unknown</span>
+                }
             </dd>
 
             <dt>Album</dt>
             <dd>
-                <a class="inline-link" asp-controller="Album" asp-action="Details" asp-route-id="@song.Album.Id">@song.Album.Title</a>
+                @if (song.Album is not null)
+                {
+                    <a class="inline-link" asp-controller="Album" asp-action="Details" asp-route-id="@song.Album.Id">@song.Album.Title</a>
+                }
+                else
+                {
+                    <span>Unknown</span>
+                }
             </dd>
 
             <dt>Duration</dt>
@@ -36,7 +50,7 @@ else
             <dd>@song.OpeningLyric</dd>
 
             <dt>Genre</dt>
-            <dd><span class="genre-badge">@song.Album.Band.Genre.Name</span></dd>
+            <dd><span class="genre-badge">@(song.Album?.Band?.Genre?.Name ?? "Unknown")</span></dd>
         </dl>
     </section>
 

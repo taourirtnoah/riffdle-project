@@ -1,10 +1,18 @@
+using System.ComponentModel.DataAnnotations.Schema;
+
 namespace Riffdle.Models.Domain;
 
 public class PlaylistSong
 {
+
+    [ForeignKey(nameof(Playlist))]
     public int PlaylistId { get; set; }
-    public UserPlaylist? Playlist { get; set; }
+
+    public virtual UserPlaylist? Playlist { get; set; }
+
+    [ForeignKey(nameof(Song))]
     public int SongId { get; set; }
-    public Song? Song { get; set; }
+
+    public virtual Song? Song { get; set; }
     public DateTime AddedAt { get; set; }
 }

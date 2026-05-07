@@ -13,6 +13,8 @@ public class AlbumController : Controller
         _albumRepository = albumRepository;
     }
 
+    [HttpGet("albums")]
+    [HttpGet("~/Album/Index")]
     public IActionResult Index()
     {
         ViewData["Breadcrumbs"] = new List<(string Label, string? Url)>
@@ -27,6 +29,8 @@ public class AlbumController : Controller
         });
     }
 
+    [HttpGet("albums/{id:int}")]
+    [HttpGet("~/Album/Details/{id:int}")]
     public IActionResult Details(int id)
     {
         var album = _albumRepository.GetById(id);

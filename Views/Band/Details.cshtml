@@ -26,7 +26,7 @@ else
             <dd>@band.FormedYear</dd>
 
             <dt>Primary genre</dt>
-            <dd><span class="genre-badge">@band.Genre.Name</span></dd>
+            <dd><span class="genre-badge">@(band.Genre?.Name ?? "Unknown")</span></dd>
 
             <dt>Description</dt>
             <dd>@band.Description</dd>
@@ -46,7 +46,7 @@ else
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (var album in band.Albums.OrderBy(item => item.ReleaseYear))
+                    @foreach (var album in (band.Albums ?? Enumerable.Empty<Riffdle.Models.Domain.Album>()).OrderBy(item => item.ReleaseYear))
                     {
                         <tr>
                             <td>@album.Title</td>

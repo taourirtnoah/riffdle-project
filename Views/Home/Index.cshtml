@@ -103,21 +103,21 @@
 
             <div class="result-grid">
                 <div class="album-cover-placeholder" aria-hidden="true">
-                    <span>@song.Album.Title</span>
+                    <span>@(song.Album?.Title ?? "Unknown")</span>
                 </div>
 
                 <dl class="detail-grid">
                     <dt>Correct answer</dt>
-                    <dd>@song.Title</dd>
+                    <dd>@(song.Title ?? "Unknown")</dd>
 
                     <dt>Band</dt>
-                    <dd>@song.Album.Band.Name</dd>
+                    <dd>@(song.Album?.Band?.Name ?? "Unknown")</dd>
 
                     <dt>Album</dt>
-                    <dd>@song.Album.Title (@song.Album.ReleaseYear)</dd>
+                    <dd>@(song.Album?.Title ?? "Unknown") (@(song.Album?.ReleaseYear.ToString() ?? ""))</dd>
 
                     <dt>Genre</dt>
-                    <dd><span class="genre-badge">@song.Album.Band.Genre.Name</span></dd>
+                    <dd><span class="genre-badge">@(song.Album?.Band?.Genre?.Name ?? "Unknown")</span></dd>
                 </dl>
             </div>
 

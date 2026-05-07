@@ -1,16 +1,24 @@
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
 namespace Riffdle.Models.Domain;
 
 public class Song
 {
+    [Key]
     public int Id { get; set; }
     public string Title { get; set; } = string.Empty;
     public int DurationSeconds { get; set; }
-    public Album Album { get; set; } = new();
-    public Band? Band { get; set; }
+
+    [ForeignKey(nameof(Album))]
+    public int AlbumId { get; set; }
+
+    public virtual Album? Album { get; set; }
     public string OpeningLyric { get; set; } = string.Empty;
     public bool IsDailyQuizSong { get; set; }
     public string AudioSnippetUrl { get; set; } = string.Empty;
     public string AlbumCoverUrl { get; set; } = string.Empty;
-    public List<PlaylistSong> PlaylistSongs { get; set; } = new();
-    public List<QuizRound> QuizRounds { get; set; } = new();
+
+    public virtual ICollection<PlaylistSong> PlaylistSongs { get; set; } = new List<PlaylistSong>();
+    public virtual ICollection<QuizRound> QuizRounds { get; set; } = new List<QuizRound>();
 }

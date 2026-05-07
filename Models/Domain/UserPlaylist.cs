@@ -1,7 +1,10 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace Riffdle.Models.Domain;
 
 public class UserPlaylist
 {
+    [Key]
     public int Id { get; set; }
     public string Name { get; set; } = string.Empty;
     public string OwnerUserName { get; set; } = string.Empty;
@@ -9,5 +12,6 @@ public class UserPlaylist
     public DateTime CreatedAt { get; set; }
     public bool IsPublic { get; set; }
     public int Likes { get; set; }
-    public List<PlaylistSong> PlaylistSongs { get; set; } = new();
+
+    public virtual ICollection<PlaylistSong> PlaylistSongs { get; set; } = new List<PlaylistSong>();
 }

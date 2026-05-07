@@ -30,12 +30,12 @@
             }
             else
             {
-                @foreach (var song in Model.Songs.OrderBy(item => item.Album.Band.Name).ThenBy(item => item.Title))
+                @foreach (var song in Model.Songs.OrderBy(item => (item.Album?.Band?.Name) ?? string.Empty).ThenBy(item => item.Title))
                 {
                     <tr>
                         <td>@song.Title</td>
-                        <td>@song.Album.Band.Name</td>
-                        <td>@song.Album.Title</td>
+                        <td>@(song.Album?.Band?.Name ?? "Unknown")</td>
+                        <td>@(song.Album?.Title ?? "Unknown")</td>
                         <td>@TimeSpan.FromSeconds(song.DurationSeconds).ToString(@"m\:ss")</td>
                         <td>
                             <a class="inline-link" asp-controller="Song" asp-action="Details" asp-route-id="@song.Id">View details</a>

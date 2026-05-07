@@ -13,6 +13,8 @@ public class BandController : Controller
         _bandRepository = bandRepository;
     }
 
+    [HttpGet("bands")]
+    [HttpGet("~/Band/Index")]
     public IActionResult Index()
     {
         ViewData["Breadcrumbs"] = new List<(string Label, string? Url)>
@@ -27,6 +29,8 @@ public class BandController : Controller
         });
     }
 
+    [HttpGet("bands/{id:int}")]
+    [HttpGet("~/Band/Details/{id:int}")]
     public IActionResult Details(int id)
     {
         var band = _bandRepository.GetById(id);

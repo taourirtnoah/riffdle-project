@@ -153,6 +153,8 @@ namespace Riffdle.Controllers
                     outcome = GuessOutcome.Correct;
                 }
                 else if (songsByTitle.TryGetValue(previousGuess, out var guessedSong) &&
+                         guessedSong?.Album?.Band != null &&
+                         dailySong?.Album?.Band != null &&
                          guessedSong.Album.Band.Id == dailySong.Album.Band.Id)
                 {
                     outcome = GuessOutcome.SameBand;

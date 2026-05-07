@@ -21,17 +21,24 @@ else
         <dl class="detail-grid">
             <dt>Band</dt>
             <dd>
-                <a class="inline-link" asp-controller="Band" asp-action="Details" asp-route-id="@album.Band.Id">@album.Band.Name</a>
+                @if (album.Band is not null)
+                {
+                    <a class="inline-link" asp-controller="Band" asp-action="Details" asp-route-id="@album.Band.Id">@album.Band.Name</a>
+                }
+                else
+                {
+                    <span>Unknown</span>
+                }
             </dd>
 
             <dt>Release year</dt>
             <dd>@album.ReleaseYear</dd>
 
             <dt>Total songs</dt>
-            <dd>@album.Songs.Count</dd>
+            <dd>@(album.Songs?.Count ?? 0)</dd>
 
             <dt>Genre</dt>
-            <dd><span class="genre-badge">@album.Band.Genre.Name</span></dd>
+            <dd><span class="genre-badge">@(album.Band?.Genre?.Name ?? "Unknown")</span></dd>
         </dl>
     </section>
 
@@ -48,7 +55,7 @@ else
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (var song in album.Songs)
+                    @foreach (var song in (album.Songs ?? Enumerable.Empty<Riffdle.Models.Domain.Song>()))
                     {
                         <tr>
                             <td>@song.Title</td>

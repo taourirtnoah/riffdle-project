@@ -13,6 +13,8 @@ public class SongController : Controller
         _songRepository = songRepository;
     }
 
+    [HttpGet("songs")]
+    [HttpGet("~/Song/Index")]
     public IActionResult Index()
     {
         ViewData["Breadcrumbs"] = new List<(string Label, string? Url)>
@@ -27,6 +29,8 @@ public class SongController : Controller
         });
     }
 
+    [HttpGet("songs/{id:int}")]
+    [HttpGet("~/Song/Details/{id:int}")]
     public IActionResult Details(int id)
     {
         var song = _songRepository.GetById(id);

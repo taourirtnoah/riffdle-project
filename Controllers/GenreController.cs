@@ -15,6 +15,8 @@ public class GenreController : Controller
         _bandRepository = bandRepository;
     }
 
+    [HttpGet("genres")]
+    [HttpGet("~/Genre/Index")]
     public IActionResult Index()
     {
         ViewData["Breadcrumbs"] = new List<(string Label, string? Url)>
@@ -29,6 +31,8 @@ public class GenreController : Controller
         });
     }
 
+    [HttpGet("genres/{id:int}")]
+    [HttpGet("~/Genre/Details/{id:int}")]
     public IActionResult Details(int id)
     {
         var genre = _genreRepository.GetById(id);
@@ -39,7 +43,7 @@ public class GenreController : Controller
 
         var bandsInGenre = _bandRepository
             .GetAll()
-            .Where(band => band.Genre.Id == genre.Id)
+            .Where(band => band.Genre is not null && band.Genre.Id == genre.Id)
             .OrderBy(band => band.Name)
             .ToList();
 
