@@ -10,6 +10,10 @@
 <h1 class="page-title">Albums</h1>
 <p class="page-lead">Dig through landmark releases and jump into their full track listings.</p>
 
+<div class="form-actions mb-3">
+    <a class="btn btn-primary" asp-controller="Album" asp-action="Create">Create album</a>
+</div>
+
 <div class="table-wrap">
     <table class="metal-table">
         <thead>
@@ -39,6 +43,8 @@
                         <td>@(album.Songs?.Count ?? 0)</td>
                         <td>
                             <a class="inline-link" asp-controller="Album" asp-action="Details" asp-route-id="@album.Id">View details</a>
+                            <a class="inline-link" asp-controller="Album" asp-action="Edit" asp-route-id="@album.Id">Edit</a>
+                            <a class="inline-link" asp-controller="Album" asp-action="Delete" asp-route-id="@album.Id">Delete</a>
                         </td>
                     </tr>
                 }

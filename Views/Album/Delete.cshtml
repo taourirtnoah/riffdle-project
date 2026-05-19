@@ -1,0 +1,31 @@
+@model Album
+@{
+    ViewData["Title"] = "Delete Album";
+}
+
+@section Breadcrumbs {
+    @await Html.PartialAsync("_Breadcrumbs")
+}
+
+<h1 class="page-title">Delete album</h1>
+<p class="page-lead">Confirm removal of this release from the catalog.</p>
+
+<section class="detail-card">
+    <dl class="detail-grid">
+        <dt>Title</dt>
+        <dd>@Model.Title</dd>
+
+        <dt>Band</dt>
+        <dd>@(Model.Band?.Name ?? "Unknown")</dd>
+
+        <dt>Release year</dt>
+        <dd>@Model.ReleaseYear</dd>
+    </dl>
+
+    <form asp-action="Delete" asp-route-id="@Model.Id" method="post" class="form-stack">
+        <div class="form-actions">
+            <button type="submit" class="btn btn-danger">Delete</button>
+            <a class="btn btn-outline-secondary" asp-action="Details" asp-route-id="@Model.Id">Cancel</a>
+        </div>
+    </form>
+</section>

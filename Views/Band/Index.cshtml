@@ -10,6 +10,10 @@
 <h1 class="page-title">Bands</h1>
 <p class="page-lead">Browse the metal line-up powering the daily quiz catalog.</p>
 
+<div class="form-actions mb-3">
+    <a class="btn btn-primary" asp-controller="Band" asp-action="Create">Create band</a>
+</div>
+
 <div class="table-wrap">
     <table class="metal-table">
         <thead>
@@ -41,6 +45,8 @@
                         <td>@(band.Albums?.Count ?? 0)</td>
                         <td>
                             <a class="inline-link" asp-controller="Band" asp-action="Details" asp-route-id="@band.Id">View details</a>
+                            <a class="inline-link" asp-controller="Band" asp-action="Edit" asp-route-id="@band.Id">Edit</a>
+                            <a class="inline-link" asp-controller="Band" asp-action="Delete" asp-route-id="@band.Id">Delete</a>
                         </td>
                     </tr>
                 }

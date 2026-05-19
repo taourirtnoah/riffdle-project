@@ -1,0 +1,31 @@
+@model Song
+@{
+    ViewData["Title"] = "Delete Song";
+}
+
+@section Breadcrumbs {
+    @await Html.PartialAsync("_Breadcrumbs")
+}
+
+<h1 class="page-title">Delete song</h1>
+<p class="page-lead">Confirm removal of this track from the catalog.</p>
+
+<section class="detail-card">
+    <dl class="detail-grid">
+        <dt>Title</dt>
+        <dd>@Model.Title</dd>
+
+        <dt>Album</dt>
+        <dd>@(Model.Album?.Title ?? "Unknown")</dd>
+
+        <dt>Duration</dt>
+        <dd>@Model.DurationSeconds seconds</dd>
+    </dl>
+
+    <form asp-action="Delete" asp-route-id="@Model.Id" method="post" class="form-stack">
+        <div class="form-actions">
+            <button type="submit" class="btn btn-danger">Delete</button>
+            <a class="btn btn-outline-secondary" asp-action="Details" asp-route-id="@Model.Id">Cancel</a>
+        </div>
+    </form>
+</section>

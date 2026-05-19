@@ -17,6 +17,11 @@ else
 {
     <h1 class="page-title">@album.Title</h1>
 
+    <div class="form-actions mb-3">
+        <a class="btn btn-primary" asp-controller="Album" asp-action="Edit" asp-route-id="@album.Id">Edit</a>
+        <a class="btn btn-outline-danger" asp-controller="Album" asp-action="Delete" asp-route-id="@album.Id">Delete</a>
+    </div>
+
     <section class="detail-card">
         <dl class="detail-grid">
             <dt>Band</dt>

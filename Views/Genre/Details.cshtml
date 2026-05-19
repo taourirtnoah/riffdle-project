@@ -17,6 +17,11 @@ else
 {
     <h1 class="page-title">@genre.Name</h1>
 
+    <div class="form-actions mb-3">
+        <a class="btn btn-primary" asp-controller="Genre" asp-action="Edit" asp-route-id="@genre.Id">Edit</a>
+        <a class="btn btn-outline-danger" asp-controller="Genre" asp-action="Delete" asp-route-id="@genre.Id">Delete</a>
+    </div>
+
     <section class="detail-card">
         <dl class="detail-grid">
             <dt>Description</dt>

@@ -10,6 +10,10 @@
 <h1 class="page-title">Genres</h1>
 <p class="page-lead">Metal subgenres available in the quiz catalog.</p>
 
+<div class="form-actions mb-3">
+    <a class="btn btn-primary" asp-controller="Genre" asp-action="Create">Create genre</a>
+</div>
+
 <div class="table-wrap">
     <table class="metal-table">
         <thead>
@@ -35,6 +39,8 @@
                         <td>@genre.Description</td>
                         <td>
                             <a class="inline-link" asp-controller="Genre" asp-action="Details" asp-route-id="@genre.Id">View details</a>
+                            <a class="inline-link" asp-controller="Genre" asp-action="Edit" asp-route-id="@genre.Id">Edit</a>
+                            <a class="inline-link" asp-controller="Genre" asp-action="Delete" asp-route-id="@genre.Id">Delete</a>
                         </td>
                     </tr>
                 }

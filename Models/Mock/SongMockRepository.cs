@@ -8,7 +8,6 @@ namespace Riffdle.Models.Mock;
 public class SongMockRepository
 {
     private readonly IDbContextFactory<RiffdleDbContext> _dbContextFactory;
-    private List<Song>? _songs;
     private Song? _dailyQuizSong;
 
     public SongMockRepository(IDbContextFactory<RiffdleDbContext> dbContextFactory)
@@ -74,20 +73,13 @@ public class SongMockRepository
 
     private List<Song> LoadSongs()
     {
-        if (_songs is not null)
-        {
-            return _songs;
-        }
-
         using var context = _dbContextFactory.CreateDbContext();
-        _songs = context.Songs
+        return context.Songs
             .AsNoTracking()
             .Include(song => song.Album)
             .ThenInclude(album => album!.Band)
             .ThenInclude(band => band!.Genre)
             .OrderBy(song => song.Id)
             .ToList();
-
-        return _songs;
     }
 }

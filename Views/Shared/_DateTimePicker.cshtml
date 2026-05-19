@@ -1,0 +1,13 @@
+@model DateTimePickerViewModel
+
+<div class="mb-3 date-time-control" data-datetime-control>
+    <label class="form-label" for="@Model.InputId">@Model.Label</label>
+    <input class="form-control"
+           type="text"
+           id="@Model.InputId"
+           name="@Model.InputName"
+           value="@(Model.Value?.ToString(Model.DisplayFormat) ?? string.Empty)"
+           placeholder="@Model.Placeholder"
+           autocomplete="off"
+           data-datetime-format="@Model.DisplayFormat" />
+</div>

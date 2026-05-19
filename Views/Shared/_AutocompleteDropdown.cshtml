@@ -1,0 +1,16 @@
+@model AutocompleteDropdownViewModel
+
+<div class="mb-3 autocomplete-control" data-autocomplete-control>
+    <label class="form-label" for="@Model.InputId">@Model.Label</label>
+    <input type="hidden" name="@Model.HiddenName" id="@Model.HiddenId" value="@(Model.SelectedId?.ToString() ?? string.Empty)" />
+    <input class="form-control"
+           type="text"
+           id="@Model.InputId"
+           name="@Model.InputName"
+           value="@Model.SelectedText"
+           placeholder="@Model.Placeholder"
+           autocomplete="off"
+           data-autocomplete-url="@Model.SearchUrl"
+           data-autocomplete-hidden-id="@Model.HiddenId" />
+    <div class="autocomplete-results" data-autocomplete-results hidden></div>
+</div>

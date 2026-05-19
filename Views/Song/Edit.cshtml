@@ -1,0 +1,71 @@
+@model SongFormViewModel
+@{
+    ViewData["Title"] = "Edit Song";
+}
+
+@section Breadcrumbs {
+    @await Html.PartialAsync("_Breadcrumbs")
+}
+
+<h1 class="page-title">Edit song</h1>
+<p class="page-lead">Update the track metadata and album artwork link.</p>
+
+<section class="detail-card">
+    <form asp-action="Edit" method="post" class="form-stack">
+        <input asp-for="Id" type="hidden" />
+
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+        <div class="mb-3">
+            <label asp-for="Title" class="form-label"></label>
+            <input asp-for="Title" class="form-control" />
+            <span asp-validation-for="Title" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="DurationSeconds" class="form-label"></label>
+            <input asp-for="DurationSeconds" class="form-control" />
+            <span asp-validation-for="DurationSeconds" class="text-danger"></span>
+        </div>
+
+        @await Html.PartialAsync("_AutocompleteDropdown", new AutocompleteDropdownViewModel
+        {
+            Label = "Album",
+            InputName = "AlbumSearch",
+            InputId = "AlbumSearch",
+            HiddenName = nameof(Model.AlbumId),
+            HiddenId = nameof(Model.AlbumId),
+            SelectedId = Model.AlbumId == 0 ? null : Model.AlbumId,
+            SelectedText = Model.AlbumTitle,
+            SearchUrl = Url.Action("Albums", "Search") ?? string.Empty,
+            Placeholder = "Search albums"
+        })
+        <span asp-validation-for="AlbumId" class="text-danger"></span>
+
+        <div class="mb-3">
+            <label asp-for="OpeningLyric" class="form-label"></label>
+            <textarea asp-for="OpeningLyric" class="form-control" rows="4"></textarea>
+            <span asp-validation-for="OpeningLyric" class="text-danger"></span>
+        </div>
+
+        <div class="form-check mb-3">
+            <input asp-for="IsDailyQuizSong" class="form-check-input" />
+            <label asp-for="IsDailyQuizSong" class="form-check-label"></label>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="AlbumCoverUrl" class="form-label"></label>
+            <input asp-for="AlbumCoverUrl" class="form-control" />
+            <span asp-validation-for="AlbumCoverUrl" class="text-danger"></span>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Save changes</button>
+            <a class="btn btn-outline-secondary" asp-action="Details" asp-route-id="@Model.Id">Cancel</a>
+        </div>
+    </form>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

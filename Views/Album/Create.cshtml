@@ -1,0 +1,52 @@
+@model AlbumFormViewModel
+@{
+    ViewData["Title"] = "Create Album";
+}
+
+@section Breadcrumbs {
+    @await Html.PartialAsync("_Breadcrumbs")
+}
+
+<h1 class="page-title">Create album</h1>
+<p class="page-lead">Add a new release to the catalog.</p>
+
+<section class="detail-card">
+    <form asp-action="Create" method="post" class="form-stack">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+        <div class="mb-3">
+            <label asp-for="Title" class="form-label"></label>
+            <input asp-for="Title" class="form-control" />
+            <span asp-validation-for="Title" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="ReleaseYear" class="form-label"></label>
+            <input asp-for="ReleaseYear" class="form-control" />
+            <span asp-validation-for="ReleaseYear" class="text-danger"></span>
+        </div>
+
+        @await Html.PartialAsync("_AutocompleteDropdown", new AutocompleteDropdownViewModel
+        {
+            Label = "Band",
+            InputName = "BandSearch",
+            InputId = "BandSearch",
+            HiddenName = nameof(Model.BandId),
+            HiddenId = nameof(Model.BandId),
+            SelectedId = Model.BandId == 0 ? null : Model.BandId,
+            SelectedText = string.Empty,
+            SearchUrl = Url.Action("Bands", "Search") ?? string.Empty,
+            Placeholder = "Search bands"
+        })
+        <span asp-validation-for="BandId" class="text-danger"></span>
+
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Save</button>
+            <a class="btn btn-outline-secondary" asp-action="Index">Cancel</a>
+        </div>
+    </form>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

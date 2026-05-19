@@ -10,6 +10,10 @@
 <h1 class="page-title">Songs</h1>
 <p class="page-lead">Scroll the full mock setlist and inspect each track in detail.</p>
 
+<div class="form-actions mb-3">
+    <a class="btn btn-primary" asp-controller="Song" asp-action="Create">Create song</a>
+</div>
+
 <div class="table-wrap">
     <table class="metal-table">
         <thead>
@@ -39,6 +43,8 @@
                         <td>@TimeSpan.FromSeconds(song.DurationSeconds).ToString(@"m\:ss")</td>
                         <td>
                             <a class="inline-link" asp-controller="Song" asp-action="Details" asp-route-id="@song.Id">View details</a>
+                            <a class="inline-link" asp-controller="Song" asp-action="Edit" asp-route-id="@song.Id">Edit</a>
+                            <a class="inline-link" asp-controller="Song" asp-action="Delete" asp-route-id="@song.Id">Delete</a>
                         </td>
                     </tr>
                 }

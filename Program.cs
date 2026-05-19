@@ -1,3 +1,5 @@
+using System.Globalization;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
 using Riffdle.Data;
 using Riffdle.Models.Mock;
@@ -39,6 +41,19 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
+
+var supportedCultures = new[]
+{
+    new CultureInfo("hr"),
+    new CultureInfo("en-US")
+};
+
+app.UseRequestLocalization(new RequestLocalizationOptions
+{
+    DefaultRequestCulture = new RequestCulture("hr"),
+    SupportedCultures = supportedCultures,
+    SupportedUICultures = supportedCultures
+});
 
 app.UseRouting();
 

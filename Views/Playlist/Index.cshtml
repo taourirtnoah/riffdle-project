@@ -10,6 +10,10 @@
 <h1 class="page-title">Playlists</h1>
 <p class="page-lead">A small demo page built from the new playlist EF model.</p>
 
+<div class="form-actions mb-3">
+    <a class="btn btn-primary" asp-controller="Playlist" asp-action="Create">Create playlist</a>
+</div>
+
 <div class="table-wrap">
     <table class="metal-table">
         <thead>
@@ -43,6 +47,10 @@
                     </tr>
                     <tr>
                         <td colspan="6">
+                            <div class="form-actions mb-2">
+                                <a class="inline-link" asp-controller="Playlist" asp-action="Edit" asp-route-id="@playlist.Id">Edit</a>
+                                <a class="inline-link" asp-controller="Playlist" asp-action="Delete" asp-route-id="@playlist.Id">Delete</a>
+                            </div>
                             <div class="playlist-tracklist">
                                 @foreach (var track in (playlist.PlaylistSongs ?? Enumerable.Empty<Riffdle.Models.Domain.PlaylistSong>()).OrderBy(item => item.AddedAt))
                                 {

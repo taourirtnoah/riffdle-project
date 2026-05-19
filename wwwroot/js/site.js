@@ -129,3 +129,31 @@
 		}
 	});
 })();
+
+(function () {
+	if (typeof window.jQuery === "undefined" || typeof window.jQuery.validator === "undefined") {
+		return;
+	}
+
+	window.jQuery.validator.setDefaults({
+		onfocusout: function (element) {
+			this.element(element);
+		},
+		onkeyup: function (element) {
+			if (window.jQuery(element).is(":checkbox,:radio")) {
+				return;
+			}
+
+			this.element(element);
+		},
+		onclick: function (element) {
+			this.element(element);
+		},
+		highlight: function (element) {
+			window.jQuery(element).addClass("is-invalid");
+		},
+		unhighlight: function (element) {
+			window.jQuery(element).removeClass("is-invalid");
+		}
+	});
+})();
