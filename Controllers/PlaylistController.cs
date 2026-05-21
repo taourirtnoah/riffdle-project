@@ -256,11 +256,35 @@ public class PlaylistController : Controller
             {
                 PlaylistId = id,
                 SongId = songId,
-                AddedAt = newSongAddedAt ?? DateTime.UtcNow
+                // Always set server time to prevent client manipulation
+                AddedAt = DateTime.UtcNow
             });
 
             await context.SaveChangesAsync();
         }
+
+        return RedirectToAction(nameof(Edit), new { id });
+    }
+
+    [HttpPost("playlists/{id:int}/songs/remove")]
+    [HttpPost("~/Playlist/RemoveSong/{id:int}")]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> RemoveSong(int id, int songId)
+    {
+        if (songId <= 0)
+        {
+            return RedirectToAction(nameof(Edit), new { id });
+        }
+
+        await using var context = await _dbContextFactory.CreateDbContextAsync();
+        var relation = await context.PlaylistSongs.FirstOrDefaultAsync(item => item.PlaylistId == id && item.SongId == songId);
+        if (relation is null)
+        {
+            return RedirectToAction(nameof(Edit), new { id });
+        }
+
+        context.PlaylistSongs.Remove(relation);
+        await context.SaveChangesAsync();
 
         return RedirectToAction(nameof(Edit), new { id });
     }

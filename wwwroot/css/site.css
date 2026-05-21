@@ -2,6 +2,8 @@
   --bg-0: #0a0a0a;
   --bg-1: #111111;
   --bg-2: #1a1a1a;
+  --btn-height: 42px;
+  --btn-height-sm: 32px;
   --red-0: #8b0000;
   --red-1: #cc0000;
   --bone: #e8e0d0;
@@ -250,11 +252,18 @@ a:hover {
   flex-wrap: wrap;
   gap: 12px;
   align-items: center;
+  justify-content: flex-end;
 }
 
 .btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
   border-radius: 999px;
-  padding: 0.72rem 1.15rem;
+  padding: 0 1rem;
+  min-height: var(--btn-height);
+  line-height: 1;
   border-width: 1px;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -304,7 +313,8 @@ a:hover {
 }
 
 .btn-sm {
-  padding: 0.45rem 0.8rem;
+  padding: 0 0.6rem;
+  min-height: var(--btn-height-sm);
   font-size: 0.68rem;
 }
 
@@ -398,6 +408,22 @@ input[type="search"].form-control {
   margin-top: var(--space-3);
 }
 
+/* Improve contrast for the add-song dropdown in playlist edit */
+.playlist-song-row .form-select {
+  color: var(--bone);
+  background: linear-gradient(180deg, #141212, #0f0f0f);
+  border-color: #2f1b1b;
+}
+
+.playlist-song-row .form-select option {
+  color: var(--bone);
+  background: #0f0f0f;
+}
+
+.playlist-song-row .form-select:focus {
+  color: var(--bone);
+}
+
 /* Track badge + hover timestamp */
 .guess-badge {
   display: inline-block;
@@ -436,12 +462,25 @@ input[type="search"].form-control {
 
 .playlist-song-row {
   display: flex;
-  gap: var(--space-2);
-  align-items: flex-end;
+  align-items: center;
+  gap: 0.75rem;
 }
 
 .playlist-song-row .form-select {
-  flex: 1;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.playlist-song-row .btn {
+  flex: 0 0 auto;
+}
+
+.playlist-track-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  justify-content: space-between;
+  padding: 0.25rem 0;
 }
 
 .playlist-tracklist {

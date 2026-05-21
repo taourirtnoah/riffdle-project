@@ -84,14 +84,7 @@
                 <button type="submit" class="btn btn-primary">Add song</button>
             </div>
 
-            @await Html.PartialAsync("_DateTimePicker", new DateTimePickerViewModel
-            {
-                Label = "Added at",
-                InputName = nameof(Model.NewSongAddedAt),
-                InputId = nameof(Model.NewSongAddedAt),
-                Value = Model.NewSongAddedAt,
-                Placeholder = "dd.MM.yyyy HH:mm"
-            })
+            @* Removing client-editable date control. Server will set AddedAt to UTC now. *@
         </form>
     }
 
@@ -100,10 +93,17 @@
         <div class="playlist-tracklist mt-3">
             @foreach (var track in Model.PlaylistSongs.OrderBy(item => item.AddedAt))
             {
-                <span class="guess-badge">
-                    @(track.Song?.Title ?? "Unknown track")
-                    <time class="track-added-at" datetime="@track.AddedAt.ToString("o")">@track.AddedAt.ToLocalTime().ToString("g")</time>
-                </span>
+                <div class="playlist-track-item">
+                    <span class="guess-badge">
+                        @(track.Song?.Title ?? "Unknown track")
+                        <time class="track-added-at" datetime="@track.AddedAt.ToString("o")">@track.AddedAt.ToLocalTime().ToString("g")</time>
+                    </span>
+                    <form asp-action="RemoveSong" asp-route-id="@Model.Id" method="post" class="d-inline ms-2">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="songId" value="@track.SongId" />
+                        <button type="submit" class="btn btn-sm btn-outline-secondary">Remove</button>
+                    </form>
+                </div>
             }
         </div>
     }
