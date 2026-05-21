@@ -14,8 +14,12 @@
     <a class="btn btn-primary" asp-controller="Genre" asp-action="Create">Create genre</a>
 </div>
 
+<div class="mb-3">
+    <input type="search" class="form-control" placeholder="Search genres" data-list-search-input data-list-search-url="/search/genres" data-list-target="#genres-table" />
+</div>
+
 <div class="table-wrap">
-    <table class="metal-table">
+    <table id="genres-table" class="metal-table">
         <thead>
             <tr>
                 <th>Name</th>
@@ -34,7 +38,9 @@
             {
                 @foreach (var genre in Model.Genres.OrderBy(item => item.Name))
                 {
-                    <tr>
+                    var genreSearchText = string.Join(" ", new[] { genre.Name, genre.Description });
+
+                    <tr data-item-id="@genre.Id" data-search-text="@genreSearchText">
                         <td><span class="genre-badge">@genre.Name</span></td>
                         <td>@genre.Description</td>
                         <td>

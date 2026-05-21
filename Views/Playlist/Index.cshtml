@@ -3,6 +3,22 @@
     ViewData["Title"] = "Playlists";
 }
 
+@functions {
+    private static string RelativeTime(DateTime dt)
+    {
+        var span = DateTime.UtcNow - dt.ToUniversalTime();
+        if (span.TotalDays >= 2)
+            return $"added {(int)span.TotalDays} days ago";
+        if (span.TotalDays >= 1)
+            return "added 1 day ago";
+        if (span.TotalHours >= 1)
+            return $"added {(int)span.TotalHours} hours ago";
+        if (span.TotalMinutes >= 1)
+            return $"added {(int)span.TotalMinutes} minutes ago";
+        return "added just now";
+    }
+}
+
 @section Breadcrumbs {
     @await Html.PartialAsync("_Breadcrumbs")
 }
@@ -14,14 +30,17 @@
     <a class="btn btn-primary" asp-controller="Playlist" asp-action="Create">Create playlist</a>
 </div>
 
+<div class="mb-3">
+    <input type="search" class="form-control" placeholder="Search playlists" data-list-search-input data-list-search-url="/search/playlists" data-list-target="#playlists-table" />
+</div>
+
 <div class="table-wrap">
-    <table class="metal-table">
+    <table id="playlists-table" class="metal-table">
         <thead>
             <tr>
                 <th>Name</th>
                 <th>Owner</th>
                 <th>Songs</th>
-                <th>Likes</th>
                 <th>Visibility</th>
                 <th>Created</th>
             </tr>
@@ -30,32 +49,54 @@
             @if (Model.Playlists.Count == 0)
             {
                 <tr>
-                    <td colspan="6">No playlists available.</td>
+                    <td colspan="5">No playlists available.</td>
                 </tr>
             }
             else
             {
                 @foreach (var playlist in Model.Playlists)
                 {
-                    <tr>
+                    var hasLiked = Model.LikedPlaylistIds.Contains(playlist.Id);
+                    var playlistSongTitles = string.Join(" ", (playlist.PlaylistSongs ?? Enumerable.Empty<Riffdle.Models.Domain.PlaylistSong>()).Select(item => item.Song?.Title ?? "Unknown track"));
+                    var playlistSearchText = string.Join(" ", new[]
+                    {
+                        playlist.Name,
+                        playlist.OwnerUserName,
+                        playlist.IsPublic ? "Public" : "Private",
+                        playlistSongTitles
+                    });
+
+                    <tr data-item-id="@playlist.Id" data-search-text="@playlistSearchText">
                         <td>@playlist.Name</td>
                         <td>@playlist.OwnerUserName</td>
                         <td>@(playlist.PlaylistSongs?.Count ?? 0)</td>
-                        <td>@playlist.Likes</td>
                         <td>@(playlist.IsPublic ? "Public" : "Private")</td>
                         <td>@playlist.CreatedAt.ToString("yyyy-MM-dd")</td>
                     </tr>
-                    <tr>
-                        <td colspan="6">
-                            <div class="form-actions mb-2">
-                                <a class="inline-link" asp-controller="Playlist" asp-action="Edit" asp-route-id="@playlist.Id">Edit</a>
-                                <a class="inline-link" asp-controller="Playlist" asp-action="Delete" asp-route-id="@playlist.Id">Delete</a>
-                            </div>
-                            <div class="playlist-tracklist">
-                                @foreach (var track in (playlist.PlaylistSongs ?? Enumerable.Empty<Riffdle.Models.Domain.PlaylistSong>()).OrderBy(item => item.AddedAt))
-                                {
-                                    <span class="guess-badge">@(track.Song?.Title ?? "Unknown track")</span>
-                                }
+                    <tr data-item-id="@playlist.Id">
+                        <td colspan="5">
+                            <div class="playlist-card-footer">
+                                <div class="playlist-tracklist">
+                                    @foreach (var track in (playlist.PlaylistSongs ?? Enumerable.Empty<Riffdle.Models.Domain.PlaylistSong>()).OrderBy(item => item.AddedAt))
+                                    {
+                                        <span class="guess-badge">
+                                            @(track.Song?.Title ?? "Unknown track")
+                                            <time class="track-added-at" datetime="@track.AddedAt.ToString("o")">@track.AddedAt.ToLocalTime().ToString("g")</time>
+                                        </span>
+                                    }
+                                </div>
+
+                                <div class="playlist-actions">
+                                    <form asp-controller="Playlist" asp-action="Like" asp-route-id="@playlist.Id" method="post" class="d-inline">
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit" class="playlist-like-button @(hasLiked ? "is-liked" : string.Empty)" aria-label="@(hasLiked ? $"Unlike playlist {playlist.Name}" : $"Like playlist {playlist.Name}")" title="@(hasLiked ? "Unlike" : "Like")">
+                                            <span class="like-icon">👍</span>
+                                            <span class="like-count">@playlist.Likes</span>
+                                        </button>
+                                    </form>
+                                    <a class="inline-link" asp-controller="Playlist" asp-action="Edit" asp-route-id="@playlist.Id">Edit</a>
+                                    <a class="inline-link" asp-controller="Playlist" asp-action="Delete" asp-route-id="@playlist.Id">Delete</a>
+                                </div>
                             </div>
                         </td>
                     </tr>

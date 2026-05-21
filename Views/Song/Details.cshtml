@@ -16,11 +16,26 @@
 else
 {
     <h1 class="page-title">@song.Title</h1>
+    var albumTitle = song.Album?.Title ?? song.Title;
 
     <div class="form-actions mb-3">
         <a class="btn btn-primary" asp-controller="Song" asp-action="Edit" asp-route-id="@song.Id">Edit</a>
         <a class="btn btn-outline-danger" asp-controller="Song" asp-action="Delete" asp-route-id="@song.Id">Delete</a>
     </div>
+
+    <section class="detail-card album-art-card">
+        <h2 class="section-title">Album cover art</h2>
+        @if (!string.IsNullOrWhiteSpace(song.AlbumCoverUrl))
+        {
+            <div class="album-art-frame">
+                <img class="album-art-image" src="@song.AlbumCoverUrl" alt="Cover art for @albumTitle" />
+            </div>
+        }
+        else
+        {
+            <p class="page-lead mb-0">No album cover art is available for this song.</p>
+        }
+    </section>
 
     <section class="detail-card">
         <dl class="detail-grid">

@@ -14,8 +14,12 @@
     <a class="btn btn-primary" asp-controller="Band" asp-action="Create">Create band</a>
 </div>
 
+<div class="mb-3">
+    <input type="search" class="form-control" placeholder="Search bands" data-list-search-input data-list-search-url="/search/bands" data-list-target="#bands-table" />
+</div>
+
 <div class="table-wrap">
-    <table class="metal-table">
+    <table id="bands-table" class="metal-table">
         <thead>
             <tr>
                 <th>Name</th>
@@ -37,7 +41,9 @@
             {
                 @foreach (var band in Model.Bands.OrderBy(item => item.Name))
                 {
-                    <tr>
+                    var bandSearchText = string.Join(" ", new[] { band.Name, band.FormedYear.ToString(), band.Country, band.Genre?.Name ?? "Unknown" });
+
+                    <tr data-item-id="@band.Id" data-search-text="@bandSearchText">
                         <td>@band.Name</td>
                         <td>@band.FormedYear</td>
                         <td>@band.Country</td>

@@ -217,6 +217,245 @@ a:hover {
   overflow-x: auto;
 }
 
+.js-reveal-ready .table-wrap {
+  opacity: 0;
+  transform: translateY(12px);
+  transition:
+    opacity 220ms ease,
+    transform 220ms ease;
+}
+
+.table-wrap.is-revealed,
+.detail-card.is-revealed,
+.form-actions.is-revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.js-reveal-ready .metal-table tbody tr {
+  opacity: 0;
+  transform: translateY(8px);
+  transition:
+    opacity 180ms ease,
+    transform 180ms ease;
+}
+
+.metal-table tbody tr.is-row-revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.form-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+}
+
+.btn {
+  border-radius: 999px;
+  padding: 0.72rem 1.15rem;
+  border-width: 1px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-size: 0.76rem;
+  font-weight: 700;
+  transition:
+    transform 140ms ease,
+    box-shadow 140ms ease,
+    background-color 140ms ease,
+    border-color 140ms ease,
+    color 140ms ease;
+}
+
+.btn:hover {
+  transform: translateY(-1px);
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #cc0000, #8b0000);
+  border-color: #e36b6b;
+  color: #fff4e6;
+  box-shadow: 0 12px 22px rgba(204, 0, 0, 0.22);
+}
+
+.btn-primary:hover,
+.btn-primary:focus {
+  background: linear-gradient(135deg, #e61a1a, #990000);
+  border-color: #ff8d8d;
+  color: #fff8ef;
+}
+
+.btn-outline-secondary,
+.btn-danger {
+  background: rgba(232, 224, 208, 0.04);
+  color: var(--bone);
+  border-color: #3a2525;
+  box-shadow: 0 10px 18px rgba(0, 0, 0, 0.18);
+}
+
+.btn-outline-secondary:hover,
+.btn-outline-secondary:focus,
+.btn-danger:hover,
+.btn-danger:focus {
+  background: rgba(232, 224, 208, 0.09);
+  color: var(--bone);
+  border-color: #6a4141;
+}
+
+.btn-sm {
+  padding: 0.45rem 0.8rem;
+  font-size: 0.68rem;
+}
+
+.form-control,
+.form-select {
+  min-height: 48px;
+  background: linear-gradient(180deg, #171717, #111111);
+  border: 1px solid #3b2424;
+  border-radius: 0.9rem;
+  color: var(--bone);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+.form-control::placeholder {
+  color: #887c70;
+}
+
+.form-control:focus,
+.form-select:focus {
+  background: linear-gradient(180deg, #1a1414, #121212);
+  border-color: var(--red-1);
+  color: var(--bone);
+  box-shadow: 0 0 0 0.18rem rgba(204, 0, 0, 0.2);
+}
+
+textarea.form-control {
+  min-height: 140px;
+}
+
+input[type="search"].form-control {
+  padding-left: 1rem;
+}
+
+.playlist-card-footer {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.playlist-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--space-2);
+  margin-left: auto;
+}
+
+.playlist-like-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  min-height: 42px;
+  padding: 0.45rem 0.9rem;
+  border-radius: 999px;
+  border: 1px solid #3b2424;
+  background: linear-gradient(135deg, rgba(204, 0, 0, 0.18), rgba(139, 0, 0, 0.12));
+  color: #ffe5d1;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  box-shadow: 0 10px 18px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+}
+
+.playlist-like-button:hover,
+.playlist-like-button:focus {
+  color: #fff8ef;
+  border-color: #ff7f7f;
+  background: linear-gradient(135deg, rgba(230, 26, 26, 0.28), rgba(153, 0, 0, 0.18));
+}
+
+.playlist-like-button .like-icon {
+  font-size: 0.95rem;
+  line-height: 1;
+}
+
+.playlist-like-button .like-count {
+  min-width: 1ch;
+}
+
+.playlist-like-button.is-liked {
+  border-color: #ff7f7f;
+  background: linear-gradient(135deg, rgba(230, 26, 26, 0.32), rgba(153, 0, 0, 0.22));
+  color: #fff8ef;
+}
+
+.playlist-song-form {
+  margin-top: var(--space-3);
+}
+
+/* Track badge + hover timestamp */
+.guess-badge {
+  display: inline-block;
+  margin: 0 8px 8px 0;
+  padding: 6px 10px;
+  background: rgba(255,255,255,0.02);
+  border: 1px solid rgba(255,255,255,0.03);
+  border-radius: 999px;
+  font-size: 0.86rem;
+  position: relative; /* establish containing block for absolute tooltip */
+}
+
+.guess-badge .track-added-at {
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%) translateY(-8px);
+  white-space: nowrap;
+  background: rgba(20,20,20,0.95);
+  color: var(--bone);
+  padding: 6px 8px;
+  border-radius: 6px;
+  font-size: 0.78rem;
+  border: 1px solid rgba(255,255,255,0.06);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.5);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 160ms ease, transform 160ms ease;
+  z-index: 60;
+}
+
+.guess-badge:hover .track-added-at {
+  opacity: 1;
+  transform: translateX(-50%) translateY(-12px);
+}
+
+.playlist-song-row {
+  display: flex;
+  gap: var(--space-2);
+  align-items: flex-end;
+}
+
+.playlist-song-row .form-select {
+  flex: 1;
+}
+
+.playlist-tracklist {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1);
+}
+
+.playlist-song-form,
+.playlist-card-footer {
+  border-top: 1px solid #2b1a1a;
+  padding-top: var(--space-2);
+}
+
 .metal-table {
   width: 100%;
   border-collapse: collapse;
@@ -265,6 +504,36 @@ a:hover {
   border: 1px solid #2b1a1a;
   border-top: 3px solid var(--red-1);
   padding: var(--space-3);
+}
+
+.album-art-card {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.album-art-frame {
+  position: relative;
+  max-width: 420px;
+  border: 1px solid #3b1d1d;
+  background: linear-gradient(135deg, #1b1010, #0d0d0d);
+  padding: 12px;
+  box-shadow: 0 18px 34px rgba(0, 0, 0, 0.28);
+}
+
+.album-art-frame::before {
+  content: "";
+  position: absolute;
+  inset: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  pointer-events: none;
+}
+
+.album-art-image {
+  display: block;
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  border: 1px solid #2b1a1a;
 }
 
 .detail-grid {

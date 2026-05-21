@@ -3,12 +3,28 @@
     ViewData["Title"] = "Edit Playlist";
 }
 
+@functions {
+    private static string RelativeTime(DateTime dt)
+    {
+        var span = DateTime.UtcNow - dt.ToUniversalTime();
+        if (span.TotalDays >= 2)
+            return $"added {(int)span.TotalDays} days ago";
+        if (span.TotalDays >= 1)
+            return "added 1 day ago";
+        if (span.TotalHours >= 1)
+            return $"added {(int)span.TotalHours} hours ago";
+        if (span.TotalMinutes >= 1)
+            return $"added {(int)span.TotalMinutes} minutes ago";
+        return "added just now";
+    }
+}
+
 @section Breadcrumbs {
     @await Html.PartialAsync("_Breadcrumbs")
 }
 
 <h1 class="page-title">Edit playlist</h1>
-<p class="page-lead">Update playlist metadata and the timeline stamp.</p>
+<p class="page-lead">Update playlist metadata without changing its original creation time.</p>
 
 <section class="detail-card">
     <form asp-action="Edit" method="post" class="form-stack">
@@ -34,24 +50,9 @@
             <span asp-validation-for="Description" class="text-danger"></span>
         </div>
 
-        @await Html.PartialAsync("_DateTimePicker", new DateTimePickerViewModel
-        {
-            Label = "Created at",
-            InputName = nameof(Model.CreatedAt),
-            InputId = nameof(Model.CreatedAt),
-            Value = Model.CreatedAt,
-            Placeholder = "dd.MM.yyyy HH:mm"
-        })
-
         <div class="form-check mb-3">
             <input asp-for="IsPublic" class="form-check-input" />
             <label asp-for="IsPublic" class="form-check-label"></label>
-        </div>
-
-        <div class="mb-3">
-            <label asp-for="Likes" class="form-label"></label>
-            <input asp-for="Likes" class="form-control" />
-            <span asp-validation-for="Likes" class="text-danger"></span>
         </div>
 
         <div class="form-actions">
@@ -59,6 +60,53 @@
             <a class="btn btn-outline-secondary" asp-action="Index">Cancel</a>
         </div>
     </form>
+</section>
+
+<section class="detail-card">
+    <h2 class="section-title">Add songs</h2>
+    @if (Model.AvailableSongs.Count == 0)
+    {
+        <p class="page-lead mb-0">All songs are already part of this playlist.</p>
+    }
+    else
+    {
+        <form asp-action="AddSong" asp-route-id="@Model.Id" method="post" class="playlist-song-form">
+            @Html.AntiForgeryToken()
+            <label for="songId" class="form-label">Song</label>
+            <div class="playlist-song-row">
+                <select id="songId" name="songId" class="form-select">
+                    <option value="">Choose a song</option>
+                    @foreach (var song in Model.AvailableSongs)
+                    {
+                        <option value="@song.Id">@song.Title - @(song.Album?.Band?.Name ?? "Unknown band") / @(song.Album?.Title ?? "Unknown album")</option>
+                    }
+                </select>
+                <button type="submit" class="btn btn-primary">Add song</button>
+            </div>
+
+            @await Html.PartialAsync("_DateTimePicker", new DateTimePickerViewModel
+            {
+                Label = "Added at",
+                InputName = nameof(Model.NewSongAddedAt),
+                InputId = nameof(Model.NewSongAddedAt),
+                Value = Model.NewSongAddedAt,
+                Placeholder = "dd.MM.yyyy HH:mm"
+            })
+        </form>
+    }
+
+    @if (Model.PlaylistSongs.Count > 0)
+    {
+        <div class="playlist-tracklist mt-3">
+            @foreach (var track in Model.PlaylistSongs.OrderBy(item => item.AddedAt))
+            {
+                <span class="guess-badge">
+                    @(track.Song?.Title ?? "Unknown track")
+                    <time class="track-added-at" datetime="@track.AddedAt.ToString("o")">@track.AddedAt.ToLocalTime().ToString("g")</time>
+                </span>
+            }
+        </div>
+    }
 </section>
 
 @section Scripts {

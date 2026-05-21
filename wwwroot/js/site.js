@@ -157,3 +157,20 @@
 		}
 	});
 })();
+
+(function () {
+	function revealSequence(elements, className, delayStep) {
+		elements.forEach((element, index) => {
+			window.setTimeout(() => {
+				element.classList.add(className);
+			}, index * delayStep);
+		});
+	}
+
+	document.addEventListener("DOMContentLoaded", () => {
+		document.documentElement.classList.add("js-reveal-ready");
+
+		revealSequence(Array.from(document.querySelectorAll(".detail-card, .table-wrap, .form-actions")), "is-revealed", 70);
+		revealSequence(Array.from(document.querySelectorAll(".metal-table tbody tr")), "is-row-revealed", 28);
+	});
+})();

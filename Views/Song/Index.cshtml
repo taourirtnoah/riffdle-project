@@ -14,8 +14,12 @@
     <a class="btn btn-primary" asp-controller="Song" asp-action="Create">Create song</a>
 </div>
 
+<div class="mb-3">
+    <input type="search" class="form-control" placeholder="Search songs" data-list-search-input data-list-search-url="/search/songs" data-list-target="#songs-table" />
+</div>
+
 <div class="table-wrap">
-    <table class="metal-table">
+    <table id="songs-table" class="metal-table">
         <thead>
             <tr>
                 <th>Title</th>
@@ -36,7 +40,15 @@
             {
                 @foreach (var song in Model.Songs.OrderBy(item => (item.Album?.Band?.Name) ?? string.Empty).ThenBy(item => item.Title))
                 {
-                    <tr>
+                    var songSearchText = string.Join(" ", new[]
+                    {
+                        song.Title,
+                        song.Album?.Band?.Name ?? "Unknown",
+                        song.Album?.Title ?? "Unknown",
+                        TimeSpan.FromSeconds(song.DurationSeconds).ToString(@"m\:ss")
+                    });
+
+                    <tr data-item-id="@song.Id" data-search-text="@songSearchText">
                         <td>@song.Title</td>
                         <td>@(song.Album?.Band?.Name ?? "Unknown")</td>
                         <td>@(song.Album?.Title ?? "Unknown")</td>

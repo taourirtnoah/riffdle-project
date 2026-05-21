@@ -9,6 +9,7 @@ namespace Riffdle.Controllers;
 public class PlaylistController : Controller
 {
     private readonly IDbContextFactory<RiffdleDbContext> _dbContextFactory;
+    private const string LikedPlaylistsCookieName = "riffdle-liked-playlists";
 
     public PlaylistController(IDbContextFactory<RiffdleDbContext> dbContextFactory)
     {
@@ -20,6 +21,7 @@ public class PlaylistController : Controller
     public IActionResult Index()
     {
         using var context = _dbContextFactory.CreateDbContext();
+        var likedPlaylistIds = ReadLikedPlaylistIds();
 
         var playlists = context.UserPlaylists
             .AsNoTracking()
@@ -40,7 +42,36 @@ public class PlaylistController : Controller
 
         return View(new PlaylistIndexViewModel
         {
-            Playlists = playlists
+            Playlists = playlists,
+            LikedPlaylistIds = likedPlaylistIds
+        });
+    }
+
+    private HashSet<int> ReadLikedPlaylistIds()
+    {
+        if (!Request.Cookies.TryGetValue(LikedPlaylistsCookieName, out var cookieValue) || string.IsNullOrWhiteSpace(cookieValue))
+        {
+            return new HashSet<int>();
+        }
+
+        var ids = cookieValue
+            .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+            .Select(value => int.TryParse(value, out var parsedId) ? parsedId : 0)
+            .Where(parsedId => parsedId > 0)
+            .ToHashSet();
+
+        return ids;
+    }
+
+    private void PersistLikedPlaylistIds(HashSet<int> likedPlaylistIds)
+    {
+        var cookieValue = string.Join(',', likedPlaylistIds.OrderBy(id => id));
+        Response.Cookies.Append(LikedPlaylistsCookieName, cookieValue, new CookieOptions
+        {
+            Expires = DateTimeOffset.UtcNow.AddYears(1),
+            IsEssential = true,
+            HttpOnly = true,
+            SameSite = SameSiteMode.Lax
         });
     }
 
@@ -56,6 +87,32 @@ public class PlaylistController : Controller
         };
 
         return View(new PlaylistFormViewModel());
+    }
+
+    private async Task PopulateEditModelAsync(PlaylistFormViewModel model, RiffdleDbContext context, int playlistId)
+    {
+        var existingSongIds = await context.PlaylistSongs
+            .AsNoTracking()
+            .Where(item => item.PlaylistId == playlistId)
+            .Select(item => item.SongId)
+            .ToListAsync();
+
+        model.AvailableSongs = await context.Songs
+            .AsNoTracking()
+            .Include(song => song.Album)
+            .ThenInclude(album => album!.Band)
+            .Where(song => !existingSongIds.Contains(song.Id))
+            .OrderBy(song => song.Title)
+            .ToListAsync();
+
+        model.PlaylistSongs = await context.PlaylistSongs
+            .AsNoTracking()
+            .Where(item => item.PlaylistId == playlistId)
+            .Include(item => item.Song)
+            .ThenInclude(song => song!.Album)
+            .ThenInclude(album => album!.Band)
+            .OrderBy(item => item.AddedAt)
+            .ToListAsync();
     }
 
     [HttpPost("playlists/create")]
@@ -81,9 +138,9 @@ public class PlaylistController : Controller
             Name = model.Name.Trim(),
             OwnerUserName = model.OwnerUserName.Trim(),
             Description = model.Description.Trim(),
-            CreatedAt = model.CreatedAt,
+            CreatedAt = DateTime.UtcNow,
             IsPublic = model.IsPublic,
-            Likes = model.Likes
+            Likes = 0
         };
 
         context.UserPlaylists.Add(playlist);
@@ -94,14 +151,26 @@ public class PlaylistController : Controller
 
     [HttpGet("playlists/{id:int}/edit")]
     [HttpGet("~/Playlist/Edit/{id:int}")]
-    public IActionResult Edit(int id)
+    public async Task<IActionResult> Edit(int id)
     {
-        using var context = _dbContextFactory.CreateDbContext();
-        var playlist = context.UserPlaylists.AsNoTracking().FirstOrDefault(item => item.Id == id);
+        await using var context = await _dbContextFactory.CreateDbContextAsync();
+        var playlist = await context.UserPlaylists.AsNoTracking().FirstOrDefaultAsync(item => item.Id == id);
         if (playlist is null)
         {
             return NotFound();
         }
+
+        var model = new PlaylistFormViewModel
+        {
+            Id = playlist.Id,
+            Name = playlist.Name,
+            OwnerUserName = playlist.OwnerUserName,
+            Description = playlist.Description,
+            IsPublic = playlist.IsPublic,
+            NewSongAddedAt = DateTime.UtcNow
+        };
+
+        await PopulateEditModelAsync(model, context, id);
 
         ViewData["Breadcrumbs"] = new List<(string Label, string? Url)>
         {
@@ -111,16 +180,7 @@ public class PlaylistController : Controller
             ("Edit", null)
         };
 
-        return View(new PlaylistFormViewModel
-        {
-            Id = playlist.Id,
-            Name = playlist.Name,
-            OwnerUserName = playlist.OwnerUserName,
-            Description = playlist.Description,
-            CreatedAt = playlist.CreatedAt,
-            IsPublic = playlist.IsPublic,
-            Likes = playlist.Likes
-        });
+        return View(model);
     }
 
     [HttpPost("playlists/{id:int}/edit")]
@@ -135,6 +195,10 @@ public class PlaylistController : Controller
 
         if (!ModelState.IsValid)
         {
+            await using var validationContext = await _dbContextFactory.CreateDbContextAsync();
+            await PopulateEditModelAsync(model, validationContext, id);
+            model.NewSongAddedAt = DateTime.UtcNow;
+
             ViewData["Breadcrumbs"] = new List<(string Label, string? Url)>
             {
                 ("Home", Url.Action("Index", "Home")),
@@ -155,11 +219,82 @@ public class PlaylistController : Controller
         playlist.Name = model.Name.Trim();
         playlist.OwnerUserName = model.OwnerUserName.Trim();
         playlist.Description = model.Description.Trim();
-        playlist.CreatedAt = model.CreatedAt;
         playlist.IsPublic = model.IsPublic;
-        playlist.Likes = model.Likes;
 
         await context.SaveChangesAsync();
+
+        return RedirectToAction(nameof(Index));
+    }
+
+    [HttpPost("playlists/{id:int}/songs")]
+    [HttpPost("~/Playlist/AddSong/{id:int}")]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> AddSong(int id, int songId, DateTime? newSongAddedAt)
+    {
+        if (songId <= 0)
+        {
+            return RedirectToAction(nameof(Edit), new { id });
+        }
+
+        await using var context = await _dbContextFactory.CreateDbContextAsync();
+        var playlistExists = await context.UserPlaylists.AnyAsync(item => item.Id == id);
+        if (!playlistExists)
+        {
+            return NotFound();
+        }
+
+        var songExists = await context.Songs.AnyAsync(item => item.Id == songId);
+        if (!songExists)
+        {
+            return NotFound();
+        }
+
+        var alreadyAdded = await context.PlaylistSongs.AnyAsync(item => item.PlaylistId == id && item.SongId == songId);
+        if (!alreadyAdded)
+        {
+            context.PlaylistSongs.Add(new PlaylistSong
+            {
+                PlaylistId = id,
+                SongId = songId,
+                AddedAt = newSongAddedAt ?? DateTime.UtcNow
+            });
+
+            await context.SaveChangesAsync();
+        }
+
+        return RedirectToAction(nameof(Edit), new { id });
+    }
+
+    [HttpPost("playlists/{id:int}/like")]
+    [HttpPost("~/Playlist/Like/{id:int}")]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Like(int id)
+    {
+        var likedPlaylistIds = ReadLikedPlaylistIds();
+
+        await using var context = await _dbContextFactory.CreateDbContextAsync();
+        var playlist = await context.UserPlaylists.FirstOrDefaultAsync(item => item.Id == id);
+        if (playlist is null)
+        {
+            return NotFound();
+        }
+
+        if (likedPlaylistIds.Contains(id))
+        {
+            likedPlaylistIds.Remove(id);
+            if (playlist.Likes > 0)
+            {
+                playlist.Likes -= 1;
+            }
+        }
+        else
+        {
+            likedPlaylistIds.Add(id);
+            playlist.Likes += 1;
+        }
+
+        await context.SaveChangesAsync();
+        PersistLikedPlaylistIds(likedPlaylistIds);
 
         return RedirectToAction(nameof(Index));
     }
