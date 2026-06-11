@@ -13,4 +13,5 @@ public class QuizRound
 
     public virtual Song? Song { get; set; }
     public virtual ICollection<Hint> Hints { get; set; } = new List<Hint>();
+    public virtual ICollection<Attachment> Attachments { get; set; } = new List<Attachment>();
 }

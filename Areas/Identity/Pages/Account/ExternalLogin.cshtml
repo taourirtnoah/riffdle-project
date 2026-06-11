@@ -1,0 +1,38 @@
+@page
+@model Riffdle.Areas.Identity.Pages.Account.ExternalLoginModel
+@{
+    ViewData["Title"] = "External login";
+}
+
+<section class="detail-card">
+    <h1 class="page-title">Complete registration</h1>
+    <p class="page-lead">Confirm the account details for @Model.ProviderDisplayName login.</p>
+
+    <form asp-page-handler="Confirmation" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="form-stack">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+        <div class="mb-3">
+            <label asp-for="Input.Email" class="form-label"></label>
+            <input asp-for="Input.Email" class="form-control" />
+            <span asp-validation-for="Input.Email" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Input.OIB" class="form-label"></label>
+            <input asp-for="Input.OIB" class="form-control" />
+            <span asp-validation-for="Input.OIB" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Input.JMBG" class="form-label"></label>
+            <input asp-for="Input.JMBG" class="form-control" />
+            <span asp-validation-for="Input.JMBG" class="text-danger"></span>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Complete registration</button>
+    </form>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

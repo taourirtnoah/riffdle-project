@@ -1,9 +1,20 @@
 @model IEnumerable<Riffdle.Models.Domain.Attachment>
 
+@functions {
+    private static bool IsMp3Attachment(Riffdle.Models.Domain.Attachment attachment)
+    {
+        return string.Equals(attachment.ContentType, "audio/mpeg", StringComparison.OrdinalIgnoreCase)
+            || attachment.OriginalName.EndsWith(".mp3", StringComparison.OrdinalIgnoreCase)
+            || attachment.FileName.EndsWith(".mp3", StringComparison.OrdinalIgnoreCase)
+            || attachment.Url.EndsWith(".mp3", StringComparison.OrdinalIgnoreCase);
+    }
+}
+
 <table class="table table-sm">
     <thead>
         <tr>
             <th>File</th>
+            <th>Player</th>
             <th>Size</th>
             <th>Uploaded</th>
             <th></th>
@@ -13,7 +24,22 @@
         @foreach (var a in Model)
         {
             <tr>
-                <td><a href="@a.Url" target="_blank">@a.OriginalName</a></td>
+                <td>
+                    <a href="@a.Url" target="_blank" rel="noopener">@a.OriginalName</a>
+                </td>
+                <td class="attachment-player-cell">
+                    @if (IsMp3Attachment(a))
+                    {
+                        <audio class="attachment-audio-player" controls preload="metadata">
+                            <source src="@a.Url" type="audio/mpeg" />
+                            Your browser does not support the audio element.
+                        </audio>
+                    }
+                    else
+                    {
+                        <span class="attachment-player-empty">No preview</span>
+                    }
+                </td>
                 <td>@(a.Size / 1024) KB</td>
                 <td>@a.CreatedAt.ToLocalTime().ToString("g")</td>
                 <td>

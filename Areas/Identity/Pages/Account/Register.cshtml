@@ -29,6 +29,18 @@
             <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
         </div>
 
+        <div class="mb-3">
+            <label asp-for="Input.OIB" class="form-label"></label>
+            <input asp-for="Input.OIB" class="form-control" />
+            <span asp-validation-for="Input.OIB" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Input.JMBG" class="form-label"></label>
+            <input asp-for="Input.JMBG" class="form-control" />
+            <span asp-validation-for="Input.JMBG" class="text-danger"></span>
+        </div>
+
         <button type="submit" class="btn btn-primary">Register</button>
     </form>
 </section>

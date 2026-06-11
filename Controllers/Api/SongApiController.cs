@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Riffdle.Data;
 using Riffdle.Models.Domain;
@@ -18,11 +19,26 @@ public class SongApiController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<SongDTO>>> Get()
+    public async Task<ActionResult<IEnumerable<SongDTO>>> Get([FromQuery] string? q, [FromQuery] int? albumId)
     {
-        var items = await _db.Songs
+        var query = _db.Songs
             .Include(s => s.Album)
-            .AsNoTracking()
+            .AsNoTracking();
+
+        if (!string.IsNullOrWhiteSpace(q))
+        {
+            query = query.Where(s =>
+                s.Title.Contains(q) ||
+                s.OpeningLyric.Contains(q) ||
+                (s.Album != null && s.Album.Title.Contains(q)));
+        }
+
+        if (albumId.HasValue)
+        {
+            query = query.Where(s => s.AlbumId == albumId.Value);
+        }
+
+        var items = await query
             .Select(s => new SongDTO
             {
                 Id = s.Id,
@@ -58,6 +74,7 @@ public class SongApiController : ControllerBase
         });
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpPost]
     public async Task<ActionResult<SongDTO>> Post([FromBody] SongDTO model)
     {
@@ -78,6 +95,7 @@ public class SongApiController : ControllerBase
         return CreatedAtAction(nameof(Get), new { id = model.Id }, model);
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpPut("{id}")]
     public async Task<ActionResult<SongDTO>> Put(int id, [FromBody] SongDTO model)
     {
@@ -95,6 +113,7 @@ public class SongApiController : ControllerBase
         return Ok(model);
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(int id)
     {

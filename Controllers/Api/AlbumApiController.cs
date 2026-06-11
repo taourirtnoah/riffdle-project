@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Riffdle.Data;
 using Riffdle.Models.Domain;
@@ -18,11 +19,25 @@ public class AlbumApiController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<AlbumDTO>>> Get()
+    public async Task<ActionResult<IEnumerable<AlbumDTO>>> Get([FromQuery] string? q, [FromQuery] int? bandId)
     {
-        var items = await _db.Albums
+        var query = _db.Albums
             .Include(a => a.Band)
-            .AsNoTracking()
+            .AsNoTracking();
+
+        if (!string.IsNullOrWhiteSpace(q))
+        {
+            query = query.Where(a =>
+                a.Title.Contains(q) ||
+                (a.Band != null && a.Band.Name.Contains(q)));
+        }
+
+        if (bandId.HasValue)
+        {
+            query = query.Where(a => a.BandId == bandId.Value);
+        }
+
+        var items = await query
             .Select(a => new AlbumDTO
             {
                 Id = a.Id,
@@ -50,6 +65,7 @@ public class AlbumApiController : ControllerBase
         });
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpPost]
     public async Task<ActionResult<AlbumDTO>> Post([FromBody] AlbumDTO model)
     {
@@ -66,6 +82,7 @@ public class AlbumApiController : ControllerBase
         return CreatedAtAction(nameof(Get), new { id = model.Id }, model);
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpPut("{id}")]
     public async Task<ActionResult<AlbumDTO>> Put(int id, [FromBody] AlbumDTO model)
     {
@@ -79,6 +96,7 @@ public class AlbumApiController : ControllerBase
         return Ok(model);
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(int id)
     {

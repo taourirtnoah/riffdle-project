@@ -46,6 +46,18 @@ public class RegisterModel : PageModel
         [Display(Name = "Confirm password")]
         [Compare(nameof(Password), ErrorMessage = "The password and confirmation password do not match.")]
         public string ConfirmPassword { get; set; } = string.Empty;
+
+        [Required]
+        [StringLength(11, MinimumLength = 11)]
+        [RegularExpression("^[0-9]*$", ErrorMessage = "OIB smije sadržavati samo brojeve.")]
+        [Display(Name = "OIB")]
+        public string OIB { get; set; } = string.Empty;
+
+        [Required]
+        [StringLength(13, MinimumLength = 13)]
+        [RegularExpression("^[0-9]*$", ErrorMessage = "JMBG smije sadržavati samo brojeve.")]
+        [Display(Name = "JMBG")]
+        public string JMBG { get; set; } = string.Empty;
     }
 
     public void OnGet()
@@ -61,6 +73,8 @@ public class RegisterModel : PageModel
             var user = CreateUser();
             await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
             await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
+            user.OIB = Input.OIB;
+            user.JMBG = Input.JMBG;
 
             var result = await _userManager.CreateAsync(user, Input.Password);
             if (result.Succeeded)

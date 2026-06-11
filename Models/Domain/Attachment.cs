@@ -15,8 +15,11 @@ public class Attachment
     public string Url { get; set; } = string.Empty;
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
-    // Link to Song (adapted from Lab requirement to tie uploads to an entity)
     [ForeignKey(nameof(Song))]
     public int SongId { get; set; }
     public virtual Song? Song { get; set; }
+
+    [ForeignKey(nameof(QuizRound))]
+    public int? QuizRoundId { get; set; }
+    public virtual QuizRound? QuizRound { get; set; }
 }

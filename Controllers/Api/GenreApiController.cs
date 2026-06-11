@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Riffdle.Data;
 using Riffdle.Models.Domain;
@@ -18,9 +19,16 @@ public class GenreApiController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<GenreDTO>>> Get()
+    public async Task<ActionResult<IEnumerable<GenreDTO>>> Get([FromQuery] string? q)
     {
-        var items = await _db.Genres.AsNoTracking()
+        var query = _db.Genres.AsNoTracking();
+
+        if (!string.IsNullOrWhiteSpace(q))
+        {
+            query = query.Where(g => g.Name.Contains(q) || g.Description.Contains(q));
+        }
+
+        var items = await query
             .Select(g => new GenreDTO { Id = g.Id, Name = g.Name, Description = g.Description })
             .ToListAsync();
         return Ok(items);
@@ -34,6 +42,7 @@ public class GenreApiController : ControllerBase
         return Ok(new GenreDTO { Id = g.Id, Name = g.Name, Description = g.Description });
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpPost]
     public async Task<ActionResult<GenreDTO>> Post([FromBody] GenreDTO model)
     {
@@ -45,6 +54,7 @@ public class GenreApiController : ControllerBase
         return CreatedAtAction(nameof(Get), new { id = model.Id }, model);
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpPut("{id}")]
     public async Task<ActionResult<GenreDTO>> Put(int id, [FromBody] GenreDTO model)
     {
@@ -57,6 +67,7 @@ public class GenreApiController : ControllerBase
         return Ok(model);
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(int id)
     {

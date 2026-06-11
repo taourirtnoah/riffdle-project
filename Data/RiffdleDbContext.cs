@@ -29,5 +29,11 @@ public class RiffdleDbContext : IdentityDbContext<AppUser>
         // Composite primary key for the join table between playlists and songs
         modelBuilder.Entity<PlaylistSong>()
             .HasKey(ps => new { ps.PlaylistId, ps.SongId });
+
+        modelBuilder.Entity<Attachment>()
+            .HasOne(a => a.QuizRound)
+            .WithMany(q => q.Attachments)
+            .HasForeignKey(a => a.QuizRoundId)
+            .OnDelete(DeleteBehavior.NoAction);
     }
 }

@@ -396,6 +396,24 @@ a:hover {
   color: #ff8d8d;
 }
 
+.attachment-player-cell {
+  min-width: 220px;
+}
+
+.attachment-audio-player {
+  display: block;
+  width: min(320px, 100%);
+  height: 34px;
+  accent-color: var(--red-1);
+}
+
+.attachment-player-empty {
+  color: var(--muted);
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
 .btn {
   display: inline-flex;
   align-items: center;

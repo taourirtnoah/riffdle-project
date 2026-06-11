@@ -221,7 +221,9 @@
 			});
 
 			if (!response.ok) {
-				throw new Error(`Upload failed for ${file.name}`);
+				const responseText = await response.text();
+				const details = responseText ? `: ${responseText}` : "";
+				throw new Error(`Upload failed for ${file.name} (${response.status})${details}`);
 			}
 		}
 

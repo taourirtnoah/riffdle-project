@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Riffdle.Data;
 using Riffdle.Models.Domain;
@@ -18,11 +19,27 @@ public class BandApiController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<BandDTO>>> Get()
+    public async Task<ActionResult<IEnumerable<BandDTO>>> Get([FromQuery] string? q, [FromQuery] int? genreId)
     {
-        var items = await _db.Bands
+        var query = _db.Bands
             .Include(b => b.Genre)
-            .AsNoTracking()
+            .AsNoTracking();
+
+        if (!string.IsNullOrWhiteSpace(q))
+        {
+            query = query.Where(b =>
+                b.Name.Contains(q) ||
+                b.Country.Contains(q) ||
+                b.Description.Contains(q) ||
+                (b.Genre != null && b.Genre.Name.Contains(q)));
+        }
+
+        if (genreId.HasValue)
+        {
+            query = query.Where(b => b.GenreId == genreId.Value);
+        }
+
+        var items = await query
             .Select(b => new BandDTO
             {
                 Id = b.Id,
@@ -54,6 +71,7 @@ public class BandApiController : ControllerBase
         });
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpPost]
     public async Task<ActionResult<BandDTO>> Post([FromBody] BandDTO model)
     {
@@ -72,6 +90,7 @@ public class BandApiController : ControllerBase
         return CreatedAtAction(nameof(Get), new { id = model.Id }, model);
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpPut("{id}")]
     public async Task<ActionResult<BandDTO>> Put(int id, [FromBody] BandDTO model)
     {
@@ -87,6 +106,7 @@ public class BandApiController : ControllerBase
         return Ok(model);
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(int id)
     {

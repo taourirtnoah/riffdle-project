@@ -37,6 +37,15 @@ public class ApiWebApplicationFactory : WebApplicationFactory<Program>, IAsyncLi
             {
                 options.UseSqlite(sp.GetRequiredService<DbConnection>());
             });
+
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = TestAuthHandler.SchemeName;
+                options.DefaultChallengeScheme = TestAuthHandler.SchemeName;
+                options.DefaultForbidScheme = TestAuthHandler.SchemeName;
+            }).AddScheme<Microsoft.AspNetCore.Authentication.AuthenticationSchemeOptions, TestAuthHandler>(
+                TestAuthHandler.SchemeName,
+                _ => { });
         });
     }
 

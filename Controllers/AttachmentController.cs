@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 using Riffdle.Data;
 using Riffdle.Models.Domain;
 
@@ -17,12 +18,21 @@ public class AttachmentController : Controller
     }
 
     [HttpPost]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Upload(int songId, IFormFile file)
     {
         if (file == null || file.Length == 0) return BadRequest("No file provided");
 
         var song = await _db.Songs.FindAsync(songId);
         if (song == null) return NotFound();
+
+        var quizRound = await _db.QuizRounds.FirstOrDefaultAsync(round => round.SongId == songId);
+        if (quizRound == null)
+        {
+            quizRound = new QuizRound { SongId = songId };
+            _db.QuizRounds.Add(quizRound);
+            await _db.SaveChangesAsync();
+        }
 
         var uploadsRoot = Path.Combine(_env.WebRootPath ?? "wwwroot", "uploads", "songs", songId.ToString());
         Directory.CreateDirectory(uploadsRoot);
@@ -40,6 +50,7 @@ public class AttachmentController : Controller
         var attachment = new Attachment
         {
             SongId = songId,
+            QuizRoundId = quizRound.Id,
             FileName = storedFileName,
             OriginalName = file.FileName,
             ContentType = file.ContentType ?? string.Empty,
@@ -54,6 +65,7 @@ public class AttachmentController : Controller
     }
 
     [HttpGet]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> GetAttachments(int songId)
     {
         var list = await _db.Attachments.Where(a => a.SongId == songId).OrderByDescending(a => a.CreatedAt).ToListAsync();
@@ -61,6 +73,7 @@ public class AttachmentController : Controller
     }
 
     [HttpPost]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> DeleteAttachment(int id)
     {
         var att = await _db.Attachments.FindAsync(id);
