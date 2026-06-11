@@ -1,10 +1,14 @@
 using System;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
+using Riffdle.Data;
 
 #nullable disable
 
 namespace Riffdle.Data.Migrations
 {
+    [DbContext(typeof(RiffdleDbContext))]
+    [Migration("202605070001_InitialCreate")]
     public partial class InitialCreate : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)

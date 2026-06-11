@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Riffdle.Data;
@@ -18,6 +19,7 @@ public class SongController : Controller
         _dbContextFactory = dbContextFactory;
     }
 
+    [AllowAnonymous]
     [HttpGet("songs")]
     [HttpGet("~/Song/Index")]
     public IActionResult Index()
@@ -34,6 +36,7 @@ public class SongController : Controller
         });
     }
 
+    [AllowAnonymous]
     [HttpGet("songs/{id:int}")]
     [HttpGet("~/Song/Details/{id:int}")]
     public IActionResult Details(int id)
@@ -57,6 +60,7 @@ public class SongController : Controller
         });
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpGet("songs/create")]
     [HttpGet("~/Song/Create")]
     public IActionResult Create()
@@ -71,6 +75,7 @@ public class SongController : Controller
         return View(new SongFormViewModel());
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpPost("songs/create")]
     [HttpPost("~/Song/Create")]
     [ValidateAntiForgeryToken]
@@ -105,6 +110,7 @@ public class SongController : Controller
         return RedirectToAction(nameof(Details), new { id = song.Id });
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpGet("songs/{id:int}/edit")]
     [HttpGet("~/Song/Edit/{id:int}")]
     public IActionResult Edit(int id)
@@ -136,6 +142,7 @@ public class SongController : Controller
         });
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpPost("songs/{id:int}/edit")]
     [HttpPost("~/Song/Edit/{id:int}")]
     [ValidateAntiForgeryToken]
@@ -177,6 +184,7 @@ public class SongController : Controller
         return RedirectToAction(nameof(Details), new { id = song.Id });
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpGet("songs/{id:int}/delete")]
     [HttpGet("~/Song/Delete/{id:int}")]
     public IActionResult Delete(int id)
@@ -198,6 +206,7 @@ public class SongController : Controller
         return View(song);
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpPost("songs/{id:int}/delete")]
     [HttpPost("~/Song/Delete/{id:int}")]
     [ActionName("Delete")]

@@ -1,15 +1,34 @@
 using System.Globalization;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 using Riffdle.Data;
+using Riffdle.Models;
 using Riffdle.Models.Mock;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddRazorPages();
+
 builder.Services.AddDbContextFactory<RiffdleDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("RiffdleDbContext")));
+
+builder.Services.AddScoped<RiffdleDbContext>(serviceProvider =>
+    serviceProvider.GetRequiredService<IDbContextFactory<RiffdleDbContext>>().CreateDbContext());
+
+builder.Services.AddDefaultIdentity<AppUser>(options =>
+    options.SignIn.RequireConfirmedAccount = false)
+    .AddRoles<IdentityRole>()
+    .AddEntityFrameworkStores<RiffdleDbContext>();
+
+builder.Services.AddAuthentication()
+    .AddGoogle(options =>
+    {
+        options.ClientId = builder.Configuration["Authentication:Google:ClientId"] ?? string.Empty;
+        options.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"] ?? string.Empty;
+    });
 builder.Services.AddSingleton<GenreMockRepository>();
 builder.Services.AddSingleton<BandMockRepository>();
 builder.Services.AddSingleton<AlbumMockRepository>();
@@ -19,17 +38,17 @@ var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
 {
-    try
+    var dbContext = scope.ServiceProvider.GetRequiredService<RiffdleDbContext>();
+    var pendingMigrations = await dbContext.Database.GetPendingMigrationsAsync();
+
+    if (pendingMigrations.Any())
     {
-        var dbContextFactory = scope.ServiceProvider.GetRequiredService<IDbContextFactory<RiffdleDbContext>>();
-        using var dbContext = dbContextFactory.CreateDbContext();
-        dbContext.Database.EnsureCreated();
-        RiffdleSeeder.Seed(dbContext);
+        Console.WriteLine($"Applying {pendingMigrations.Count()} pending migration(s)...");
     }
-    catch (Exception exception)
-    {
-        Console.WriteLine($"Database initialization skipped: {exception.Message}");
-    }
+
+    await dbContext.Database.MigrateAsync();
+    await IdentitySeeder.SeedRolesAsync(scope.ServiceProvider);
+    RiffdleSeeder.Seed(dbContext);
 }
 
 // Configure the HTTP request pipeline.
@@ -57,11 +76,16 @@ app.UseRequestLocalization(new RequestLocalizationOptions
 
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
+app.MapRazorPages();
+
 
 app.Run();
+
+public partial class Program { }

@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Riffdle.Data;
@@ -23,6 +24,7 @@ public class AlbumController : Controller
         _dbContextFactory = dbContextFactory;
     }
 
+    [AllowAnonymous]
     [HttpGet("albums")]
     [HttpGet("~/Album/Index")]
     public IActionResult Index()
@@ -39,6 +41,7 @@ public class AlbumController : Controller
         });
     }
 
+    [AllowAnonymous]
     [HttpGet("albums/{id:int}")]
     [HttpGet("~/Album/Details/{id:int}")]
     public IActionResult Details(int id)
@@ -62,6 +65,7 @@ public class AlbumController : Controller
         });
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpGet("albums/create")]
     [HttpGet("~/Album/Create")]
     public IActionResult Create()
@@ -76,6 +80,7 @@ public class AlbumController : Controller
         return View(new AlbumFormViewModel());
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpPost("albums/create")]
     [HttpPost("~/Album/Create")]
     [ValidateAntiForgeryToken]
@@ -108,6 +113,7 @@ public class AlbumController : Controller
         return RedirectToAction(nameof(Details), new { id = album.Id });
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpGet("albums/{id:int}/edit")]
     [HttpGet("~/Album/Edit/{id:int}")]
     public IActionResult Edit(int id)
@@ -136,6 +142,7 @@ public class AlbumController : Controller
         });
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpPost("albums/{id:int}/edit")]
     [HttpPost("~/Album/Edit/{id:int}")]
     [ValidateAntiForgeryToken]
@@ -174,6 +181,7 @@ public class AlbumController : Controller
         return RedirectToAction(nameof(Details), new { id = album.Id });
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpGet("albums/{id:int}/delete")]
     [HttpGet("~/Album/Delete/{id:int}")]
     public IActionResult Delete(int id)
@@ -195,6 +203,7 @@ public class AlbumController : Controller
         return View(album);
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpPost("albums/{id:int}/delete")]
     [HttpPost("~/Album/Delete/{id:int}")]
     [ActionName("Delete")]

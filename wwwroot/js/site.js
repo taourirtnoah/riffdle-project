@@ -174,3 +174,100 @@
 		revealSequence(Array.from(document.querySelectorAll(".metal-table tbody tr")), "is-row-revealed", 28);
 	});
 })();
+
+(function () {
+	const dropzone = document.getElementById("attachment-dropzone");
+	const fileInput = document.getElementById("attachment-file-input");
+	const status = document.getElementById("attachment-upload-status");
+	const list = document.getElementById("attachment-list");
+	const songIdInput = document.getElementById("song-id");
+
+	if (!dropzone || !fileInput || !status || !list || !songIdInput) {
+		return;
+	}
+
+	const uploadUrl = dropzone.dataset.uploadUrl || "/Attachment/Upload";
+	const songId = songIdInput.value;
+
+	function setStatus(message, isError = false) {
+		status.textContent = message;
+		status.style.color = isError ? "#ff8d8d" : "";
+	}
+
+	async function refreshAttachmentList() {
+		const response = await fetch(`/Attachment/GetAttachments?songId=${encodeURIComponent(songId)}`);
+		if (!response.ok) {
+			throw new Error("Failed to load attachments");
+		}
+		list.innerHTML = await response.text();
+	}
+
+	async function uploadFiles(files) {
+		const selectedFiles = Array.from(files || []);
+		if (selectedFiles.length === 0) {
+			return;
+		}
+
+		setStatus(`Uploading ${selectedFiles.length} file${selectedFiles.length === 1 ? "" : "s"}...`);
+
+		for (const file of selectedFiles) {
+			const formData = new FormData();
+			formData.append("songId", songId);
+			formData.append("file", file);
+
+			const response = await fetch(uploadUrl, {
+				method: "POST",
+				body: formData
+			});
+
+			if (!response.ok) {
+				throw new Error(`Upload failed for ${file.name}`);
+			}
+		}
+
+		await refreshAttachmentList();
+		setStatus("Upload complete.");
+		fileInput.value = "";
+	}
+
+	dropzone.addEventListener("click", () => fileInput.click());
+
+	dropzone.addEventListener("dragover", (event) => {
+		event.preventDefault();
+		dropzone.classList.add("is-dragover");
+	});
+
+	dropzone.addEventListener("dragleave", () => {
+		dropzone.classList.remove("is-dragover");
+	});
+
+	dropzone.addEventListener("drop", async (event) => {
+		event.preventDefault();
+		dropzone.classList.remove("is-dragover");
+
+		try {
+			await uploadFiles(event.dataTransfer.files);
+		} catch (error) {
+			console.error(error);
+			setStatus(error.message || "Upload failed.", true);
+		}
+	});
+
+	fileInput.addEventListener("change", async () => {
+		try {
+			await uploadFiles(fileInput.files);
+		} catch (error) {
+			console.error(error);
+			setStatus(error.message || "Upload failed.", true);
+		}
+	});
+
+	document.addEventListener("DOMContentLoaded", async () => {
+		try {
+			await refreshAttachmentList();
+		} catch (error) {
+			console.error(error);
+			setStatus("Could not load attachments.", true);
+		}
+	});
+})();

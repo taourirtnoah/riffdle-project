@@ -1,5 +1,6 @@
 ﻿@{
     var currentController = ViewContext.RouteData.Values["controller"]?.ToString() ?? string.Empty;
+    var isAdmin = User.IsInRole("Admin");
 
     string SidebarLinkClass(string controller)
     {
@@ -44,6 +45,25 @@
         </aside>
 
         <div class="content-shell">
+            <header class="account-bar" aria-label="Account">
+                @if (User.Identity?.IsAuthenticated == true)
+                {
+                    <span class="account-pill">Signed in as @User.Identity.Name</span>
+                    @if (isAdmin)
+                    {
+                        <span class="admin-badge" title="This account has admin access">Admin</span>
+                    }
+                    <form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Content("~/")" method="post" class="logout-form">
+                        <button type="submit" class="account-link">Logout</button>
+                    </form>
+                }
+                else
+                {
+                    <a asp-area="Identity" asp-page="/Account/Login" class="account-link">Login</a>
+                    <a asp-area="Identity" asp-page="/Account/Register" class="account-link">Register</a>
+                }
+            </header>
+
             <div class="breadcrumbs-slot">
                 @RenderSection("Breadcrumbs", required: false)
             </div>

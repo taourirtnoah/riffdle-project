@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Riffdle.Data;
@@ -18,6 +19,7 @@ public class BandController : Controller
         _dbContextFactory = dbContextFactory;
     }
 
+    [AllowAnonymous]
     [HttpGet("bands")]
     [HttpGet("~/Band/Index")]
     public IActionResult Index()
@@ -34,6 +36,7 @@ public class BandController : Controller
         });
     }
 
+    [AllowAnonymous]
     [HttpGet("bands/{id:int}")]
     [HttpGet("~/Band/Details/{id:int}")]
     public IActionResult Details(int id)
@@ -57,6 +60,7 @@ public class BandController : Controller
         });
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpGet("bands/create")]
     [HttpGet("~/Band/Create")]
     public IActionResult Create()
@@ -71,6 +75,7 @@ public class BandController : Controller
         return View(new BandFormViewModel());
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpPost("bands/create")]
     [HttpPost("~/Band/Create")]
     [ValidateAntiForgeryToken]
@@ -104,6 +109,7 @@ public class BandController : Controller
         return RedirectToAction(nameof(Details), new { id = band.Id });
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpGet("bands/{id:int}/edit")]
     [HttpGet("~/Band/Edit/{id:int}")]
     public IActionResult Edit(int id)
@@ -134,6 +140,7 @@ public class BandController : Controller
         });
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpPost("bands/{id:int}/edit")]
     [HttpPost("~/Band/Edit/{id:int}")]
     [ValidateAntiForgeryToken]
@@ -174,6 +181,7 @@ public class BandController : Controller
         return RedirectToAction(nameof(Details), new { id = band.Id });
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpGet("bands/{id:int}/delete")]
     [HttpGet("~/Band/Delete/{id:int}")]
     public IActionResult Delete(int id)
@@ -195,6 +203,7 @@ public class BandController : Controller
         return View(band);
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpPost("bands/{id:int}/delete")]
     [HttpPost("~/Band/Delete/{id:int}")]
     [ActionName("Delete")]

@@ -21,4 +21,5 @@ public class Song
 
     public virtual ICollection<PlaylistSong> PlaylistSongs { get; set; } = new List<PlaylistSong>();
     public virtual ICollection<QuizRound> QuizRounds { get; set; } = new List<QuizRound>();
+    public virtual ICollection<Attachment> Attachments { get; set; } = new List<Attachment>();
 }

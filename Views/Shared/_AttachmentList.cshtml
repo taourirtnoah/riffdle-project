@@ -1,0 +1,49 @@
+@model IEnumerable<Riffdle.Models.Domain.Attachment>
+
+<table class="table table-sm">
+    <thead>
+        <tr>
+            <th>File</th>
+            <th>Size</th>
+            <th>Uploaded</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var a in Model)
+        {
+            <tr>
+                <td><a href="@a.Url" target="_blank">@a.OriginalName</a></td>
+                <td>@(a.Size / 1024) KB</td>
+                <td>@a.CreatedAt.ToLocalTime().ToString("g")</td>
+                <td>
+                    <button class="btn btn-sm btn-danger" onclick="deleteAttachment(@a.Id)">Delete</button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<script>
+    async function deleteAttachment(id) {
+        if (!confirm('Delete this file?')) return;
+        const form = new FormData();
+        form.append('id', id);
+        const res = await fetch('/Attachment/DeleteAttachment', { method: 'POST', body: form });
+        const json = await res.json();
+        if (json.success) {
+            // reload list if present
+            const songIdEl = document.getElementById('song-id');
+            if (songIdEl) {
+                const songId = songIdEl.value;
+                const listRes = await fetch(`/Attachment/GetAttachments?songId=${songId}`);
+                const html = await listRes.text();
+                document.getElementById('attachment-list').innerHTML = html;
+            } else {
+                location.reload();
+            }
+        } else {
+            alert('Delete failed');
+        }
+    }
+</script>

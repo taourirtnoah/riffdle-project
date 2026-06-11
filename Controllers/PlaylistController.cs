@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Riffdle.Data;
@@ -16,6 +17,7 @@ public class PlaylistController : Controller
         _dbContextFactory = dbContextFactory;
     }
 
+    [AllowAnonymous]
     [HttpGet("playlists")]
     [HttpGet("~/Playlist/Index")]
     public IActionResult Index()
@@ -75,6 +77,7 @@ public class PlaylistController : Controller
         });
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpGet("playlists/create")]
     [HttpGet("~/Playlist/Create")]
     public IActionResult Create()
@@ -115,6 +118,7 @@ public class PlaylistController : Controller
             .ToListAsync();
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpPost("playlists/create")]
     [HttpPost("~/Playlist/Create")]
     [ValidateAntiForgeryToken]
@@ -149,6 +153,7 @@ public class PlaylistController : Controller
         return RedirectToAction(nameof(Index));
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpGet("playlists/{id:int}/edit")]
     [HttpGet("~/Playlist/Edit/{id:int}")]
     public async Task<IActionResult> Edit(int id)
@@ -183,6 +188,7 @@ public class PlaylistController : Controller
         return View(model);
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpPost("playlists/{id:int}/edit")]
     [HttpPost("~/Playlist/Edit/{id:int}")]
     [ValidateAntiForgeryToken]
@@ -226,6 +232,7 @@ public class PlaylistController : Controller
         return RedirectToAction(nameof(Index));
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpPost("playlists/{id:int}/songs")]
     [HttpPost("~/Playlist/AddSong/{id:int}")]
     [ValidateAntiForgeryToken]
@@ -266,6 +273,7 @@ public class PlaylistController : Controller
         return RedirectToAction(nameof(Edit), new { id });
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpPost("playlists/{id:int}/songs/remove")]
     [HttpPost("~/Playlist/RemoveSong/{id:int}")]
     [ValidateAntiForgeryToken]
@@ -289,6 +297,7 @@ public class PlaylistController : Controller
         return RedirectToAction(nameof(Edit), new { id });
     }
 
+    [AllowAnonymous]
     [HttpPost("playlists/{id:int}/like")]
     [HttpPost("~/Playlist/Like/{id:int}")]
     [ValidateAntiForgeryToken]
@@ -323,6 +332,7 @@ public class PlaylistController : Controller
         return RedirectToAction(nameof(Index));
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpGet("playlists/{id:int}/delete")]
     [HttpGet("~/Playlist/Delete/{id:int}")]
     public IActionResult Delete(int id)
@@ -350,6 +360,7 @@ public class PlaylistController : Controller
         return View(playlist);
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpPost("playlists/{id:int}/delete")]
     [HttpPost("~/Playlist/Delete/{id:int}")]
     [ActionName("Delete")]

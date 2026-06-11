@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Riffdle.Data;
@@ -23,6 +24,7 @@ public class GenreController : Controller
         _dbContextFactory = dbContextFactory;
     }
 
+    [AllowAnonymous]
     [HttpGet("genres")]
     [HttpGet("~/Genre/Index")]
     public IActionResult Index()
@@ -39,6 +41,7 @@ public class GenreController : Controller
         });
     }
 
+    [AllowAnonymous]
     [HttpGet("genres/{id:int}")]
     [HttpGet("~/Genre/Details/{id:int}")]
     public IActionResult Details(int id)
@@ -69,6 +72,7 @@ public class GenreController : Controller
         });
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpGet("genres/create")]
     [HttpGet("~/Genre/Create")]
     public IActionResult Create()
@@ -83,6 +87,7 @@ public class GenreController : Controller
         return View(new GenreFormViewModel());
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpPost("genres/create")]
     [HttpPost("~/Genre/Create")]
     [ValidateAntiForgeryToken]
@@ -113,6 +118,7 @@ public class GenreController : Controller
         return RedirectToAction(nameof(Details), new { id = genre.Id });
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpGet("genres/{id:int}/edit")]
     [HttpGet("~/Genre/Edit/{id:int}")]
     public IActionResult Edit(int id)
@@ -139,6 +145,7 @@ public class GenreController : Controller
         });
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpPost("genres/{id:int}/edit")]
     [HttpPost("~/Genre/Edit/{id:int}")]
     [ValidateAntiForgeryToken]
@@ -176,6 +183,7 @@ public class GenreController : Controller
         return RedirectToAction(nameof(Details), new { id = genre.Id });
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpGet("genres/{id:int}/delete")]
     [HttpGet("~/Genre/Delete/{id:int}")]
     public IActionResult Delete(int id)
@@ -197,6 +205,7 @@ public class GenreController : Controller
         return View(genre);
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpPost("genres/{id:int}/delete")]
     [HttpPost("~/Genre/Delete/{id:int}")]
     [ActionName("Delete")]

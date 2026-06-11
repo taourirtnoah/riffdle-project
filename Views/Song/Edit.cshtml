@@ -59,6 +59,29 @@
             <span asp-validation-for="AlbumCoverUrl" class="text-danger"></span>
         </div>
 
+        <section class="attachment-panel" aria-labelledby="attachment-panel-title">
+            <div class="attachment-panel-head">
+                <div>
+                    <p class="eyebrow">Uploads</p>
+                    <h2 id="attachment-panel-title" class="section-title">Song attachments</h2>
+                </div>
+                <span class="attachment-hint">Drag files here or click to browse</span>
+            </div>
+
+            <div id="attachment-dropzone" class="attachment-dropzone" data-upload-url="@Url.Action("Upload", "Attachment")" data-song-id="@Model.Id">
+                <input id="attachment-file-input" class="attachment-file-input" type="file" multiple />
+                <div class="attachment-dropzone-copy">
+                    <strong>Drop files here</strong>
+                    <span>or choose one or more files to upload asynchronously</span>
+                </div>
+            </div>
+
+            <div id="attachment-upload-status" class="attachment-status" role="status" aria-live="polite"></div>
+
+            <input id="song-id" type="hidden" value="@Model.Id" />
+            <div id="attachment-list" class="attachment-list-shell"></div>
+        </section>
+
         <div class="form-actions">
             <button type="submit" class="btn btn-primary">Save changes</button>
             <a class="btn btn-outline-secondary" asp-action="Details" asp-route-id="@Model.Id">Cancel</a>

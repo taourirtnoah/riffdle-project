@@ -156,6 +156,56 @@ a:hover {
   width: calc(100% - var(--sidebar-width));
 }
 
+.account-bar {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: var(--space-2) var(--space-3) 0;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.account-pill {
+  border: 1px solid #3a2a2a;
+  background: #151111;
+  border-radius: 999px;
+  padding: 6px 12px;
+  letter-spacing: 0.05em;
+  font-size: 0.8rem;
+}
+
+.admin-badge {
+  border: 1px solid #c28a00;
+  background: #2a2006;
+  color: #ffd56a;
+  border-radius: 999px;
+  padding: 6px 10px;
+  letter-spacing: 0.1em;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+}
+
+.logout-form {
+  margin: 0;
+}
+
+.account-link {
+  border: 1px solid var(--red-1);
+  background: transparent;
+  color: var(--bone);
+  border-radius: 6px;
+  padding: 6px 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.75rem;
+}
+
+.account-link:hover {
+  background: #2a1212;
+  color: var(--bone);
+}
+
 .breadcrumbs-slot {
   max-width: 1100px;
   padding: var(--space-3) var(--space-3) 0;
@@ -253,6 +303,97 @@ a:hover {
   gap: 12px;
   align-items: center;
   justify-content: flex-end;
+}
+
+.attachment-panel {
+  margin-top: var(--space-3);
+  padding: var(--space-3);
+  border: 1px solid #3b2424;
+  border-radius: 1rem;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(0, 0, 0, 0.16));
+}
+
+.attachment-panel-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-2);
+  margin-bottom: var(--space-2);
+}
+
+.attachment-hint {
+  align-self: center;
+  color: var(--muted);
+  font-size: 0.78rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.attachment-dropzone {
+  position: relative;
+  display: grid;
+  place-items: center;
+  min-height: 160px;
+  border: 1.5px dashed #644040;
+  border-radius: 1rem;
+  padding: var(--space-3);
+  background: radial-gradient(circle at top, rgba(204, 0, 0, 0.14), transparent 52%), rgba(255, 255, 255, 0.02);
+  cursor: pointer;
+  transition: border-color 140ms ease, background-color 140ms ease, transform 140ms ease;
+}
+
+.attachment-dropzone:hover,
+.attachment-dropzone.is-dragover {
+  border-color: #ff8d8d;
+  background: radial-gradient(circle at top, rgba(230, 26, 26, 0.18), transparent 52%), rgba(255, 255, 255, 0.04);
+  transform: translateY(-1px);
+}
+
+.attachment-file-input {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.attachment-dropzone-copy {
+  display: grid;
+  gap: 0.35rem;
+  text-align: center;
+  pointer-events: none;
+}
+
+.attachment-dropzone-copy strong {
+  font-size: 1rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.attachment-dropzone-copy span,
+.attachment-status {
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
+.attachment-status {
+  min-height: 1.2rem;
+  margin-top: var(--space-2);
+}
+
+.attachment-list-shell {
+  margin-top: var(--space-2);
+}
+
+.attachment-list-shell .table {
+  margin-bottom: 0;
+}
+
+.attachment-list-shell .table a {
+  color: #ffd7bf;
+}
+
+.attachment-list-shell .table a:hover {
+  color: #ff8d8d;
 }
 
 .btn {

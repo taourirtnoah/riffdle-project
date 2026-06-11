@@ -5,6 +5,8 @@ VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Riffdle", "Riffdle.csproj", "{6429BEF7-D6D4-421B-A2F9-0F36ED5C93F1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Riffdle.Tests", "Riffdle.Tests\Riffdle.Tests.csproj", "{EA57CE9D-3411-4920-8E84-F2D0979BC38A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,18 @@ Global
 		{6429BEF7-D6D4-421B-A2F9-0F36ED5C93F1}.Release|x64.Build.0 = Release|Any CPU
 		{6429BEF7-D6D4-421B-A2F9-0F36ED5C93F1}.Release|x86.ActiveCfg = Release|Any CPU
 		{6429BEF7-D6D4-421B-A2F9-0F36ED5C93F1}.Release|x86.Build.0 = Release|Any CPU
+		{EA57CE9D-3411-4920-8E84-F2D0979BC38A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EA57CE9D-3411-4920-8E84-F2D0979BC38A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EA57CE9D-3411-4920-8E84-F2D0979BC38A}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{EA57CE9D-3411-4920-8E84-F2D0979BC38A}.Debug|x64.Build.0 = Debug|Any CPU
+		{EA57CE9D-3411-4920-8E84-F2D0979BC38A}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{EA57CE9D-3411-4920-8E84-F2D0979BC38A}.Debug|x86.Build.0 = Debug|Any CPU
+		{EA57CE9D-3411-4920-8E84-F2D0979BC38A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EA57CE9D-3411-4920-8E84-F2D0979BC38A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EA57CE9D-3411-4920-8E84-F2D0979BC38A}.Release|x64.ActiveCfg = Release|Any CPU
+		{EA57CE9D-3411-4920-8E84-F2D0979BC38A}.Release|x64.Build.0 = Release|Any CPU
+		{EA57CE9D-3411-4920-8E84-F2D0979BC38A}.Release|x86.ActiveCfg = Release|Any CPU
+		{EA57CE9D-3411-4920-8E84-F2D0979BC38A}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
